@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projects — Salesforce Experience</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --black:       #080808;
+      --black-mid:   #0f0f0f;
+      --black-soft:  #161616;
+      --border:      rgba(255,255,255,0.06);
+      --white:       #f5f3ef;
+      --white-dim:   rgba(245,243,239,0.55);
+      --white-faint: rgba(245,243,239,0.18);
+      --accent:      #00A1E0;   /* Salesforce blue */
+      --accent2:     #032D60;   /* Salesforce deep navy */
+      --accent-glow: rgba(0,161,224,0.18);
+      --gold:        #C9A84C;
+      --radius:      2px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'Syne', sans-serif;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ── CUSTOM CURSOR ── */
+    #cursor {
+      position: fixed;
+      width: 10px; height: 10px;
+      background: var(--accent);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%,-50%);
+      transition: transform 0.08s ease, width 0.25s ease, height 0.25s ease, background 0.25s ease;
+      mix-blend-mode: screen;
+    }
+    #cursor-ring {
+      position: fixed;
+      width: 36px; height: 36px;
+      border: 1px solid rgba(0,161,224,0.45);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%,-50%);
+      transition: transform 0.18s ease, width 0.3s ease, height 0.3s ease, border-color 0.3s ease;
+    }
+    body:has(a:hover) #cursor,
+    body:has(button:hover) #cursor { width: 18px; height: 18px; background: var(--gold); }
+    body:has(a:hover) #cursor-ring,
+    body:has(button:hover) #cursor-ring { width: 52px; height: 52px; border-color: var(--gold); }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.028;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    /* ── NAVIGATION ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 28px 56px;
+      background: linear-gradient(to bottom, rgba(8,8,8,0.95) 0%, transparent 100%);
+      backdrop-filter: blur(0px);
+    }
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem;
+      font-weight: 300;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--white);
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--accent); }
+
+    .nav-links {
+      display: flex;
+      gap: 48px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--white-dim);
+      text-decoration: none;
+      position: relative;
+      transition: color 0.3s;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0;
+      width: 0; height: 1px;
+      background: var(--accent);
+      transition: width 0.35s ease;
+    }
+    .nav-links a:hover { color: var(--white); }
+    .nav-links a:hover::after { width: 100%; }
+
+    .nav-cta {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      text-decoration: none;
+      border: 1px solid rgba(0,161,224,0.35);
+      padding: 10px 24px;
+      transition: background 0.3s, color 0.3s, border-color 0.3s;
+    }
+    .nav-cta:hover {
+      background: var(--accent);
+      color: var(--black);
+      border-color: var(--accent);
+    }
+
+    /* ── SECTION SHARED ── */
+    section { position: relative; }
+    .section-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 120px 56px;
+    }
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .section-label-line { width: 32px; height: 1px; background: var(--accent); }
+    .section-label span {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .section-heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.6rem, 5vw, 4.4rem);
+      font-weight: 300;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+    .section-heading em { font-style: italic; color: var(--white-dim); }
+
+    /* ── PROJECTS ── */
+    #projects { background: var(--black); }
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      margin-top: 60px;
+      background: var(--border);
+    }
+    .project-card {
+      background: var(--black);
+      padding: 40px 36px;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.4s;
+      cursor: pointer;
+    }
+    .project-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(to right, var(--accent), transparent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.5s ease;
+    }
+    .project-card:hover { background: var(--black-soft); }
+    .project-card:hover::before { transform: scaleX(1); }
+    .project-card-glow {
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 200px; height: 200px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.5s;
+      pointer-events: none;
+    }
+    .project-card:hover .project-card-glow { opacity: 1; }
+
+    .project-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.22em;
+      color: var(--white-faint);
+      margin-bottom: 24px;
+    }
+    .project-icon {
+      font-size: 1.8rem;
+      margin-bottom: 18px;
+      display: block;
+    }
+    .project-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--white);
+      margin-bottom: 12px;
+    }
+    .project-desc {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.98rem;
+      font-weight: 300;
+      line-height: 1.7;
+      color: var(--white-dim);
+      margin-bottom: 28px;
+    }
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 28px;
+    }
+    .tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid rgba(0,161,224,0.22);
+      padding: 4px 10px;
+    }
+    .project-link {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--white-faint);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: color 0.3s;
+    }
+    .project-link:hover { color: var(--accent); }
+
+    /* Featured project — spans 2 cols */
+    .project-card.featured {
+      grid-column: span 2;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: center;
+    }
+    .featured-badge {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+      border: 1px solid rgba(201,168,76,0.3);
+      padding: 4px 12px;
+      margin-bottom: 16px;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--black);
+      border-top: 1px solid var(--border);
+      padding: 36px 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .footer-copy {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--white-faint);
+    }
+    .footer-links { display: flex; gap: 32px; }
+    .footer-links a {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--white-faint);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .footer-links a:hover { color: var(--accent); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-14px); }
+    }
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.4; }
+      50%       { opacity: 1; }
+    }
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav { padding: 22px 28px; }
+      .nav-links { gap: 28px; }
+      .projects-grid { grid-template-columns: 1fr; }
+      .project-card.featured { grid-column: span 1; }
+      .section-inner { padding: 80px 28px; }
+      footer { flex-direction: column; gap: 20px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="cursor"></div>
+  <div id="cursor-ring"></div>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" href="index.html">SF<span>·</span>Portfolio</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <a class="nav-cta" href="contact.html">Hire Me</a>
+  </nav>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="section-inner">
+      <div class="section-label">
+        <div class="section-label-line"></div>
+        <span>Projects</span>
+      </div>
+      <h2 class="section-heading">Selected <em>works</em></h2>
+
+      <div class="projects-grid">
+
+        <!-- Featured -->
+        <div class="project-card featured">
+          <div class="project-card-glow"></div>
+          <div>
+            <p class="project-num">01</p>
+            <span class="featured-badge">★ Featured</span>
+            <p class="project-icon">🏛️</p>
+            <h3 class="project-title">Enterprise Sales Cloud Overhaul</h3>
+            <p class="project-desc">End-to-end reimplementation of a legacy CRM for a 500-seat financial services firm. Designed a multi-cloud Sales + Service architecture, custom Apex triggers, and automated lead scoring via Flow — reducing deal cycle time by 38%.</p>
+            <div class="project-tags">
+              <span class="tag">Sales Cloud</span>
+              <span class="tag">Apex</span>
+              <span class="tag">Flow</span>
+              <span class="tag">CPQ</span>
+            </div>
+            <a href="#" class="project-link">View Case Study →</a>
+          </div>
+          <div>
+            <div style="background:var(--black-soft);border:1px solid var(--border);height:220px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
+              <svg viewBox="0 0 200 140" width="160" style="opacity:0.7">
+                <rect x="10" y="80" width="30" height="50" rx="2" fill="#00A1E0" opacity="0.5"/>
+                <rect x="50" y="55" width="30" height="75" rx="2" fill="#00A1E0" opacity="0.7"/>
+                <rect x="90" y="30" width="30" height="100" rx="2" fill="#00A1E0"/>
+                <rect x="130" y="45" width="30" height="85" rx="2" fill="#00A1E0" opacity="0.8"/>
+                <rect x="170" y="20" width="30" height="110" rx="2" fill="#12b8f5"/>
+                <polyline points="25,80 65,55 105,30 145,45 185,20" fill="none" stroke="#C9A84C" stroke-width="1.5" stroke-dasharray="3 3"/>
+              </svg>
+              <div style="position:absolute;bottom:14px;right:16px;font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.18em;color:rgba(0,161,224,0.6);text-transform:uppercase;">Q4 Pipeline Growth +38%</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="project-card">
+          <div class="project-card-glow"></div>
+          <p class="project-num">02</p>
+          <p class="project-icon">🌐</p>
+          <h3 class="project-title">Partner Experience Portal</h3>
+          <p class="project-desc">Custom Experience Cloud portal for 200+ channel partners. Built self-service deal registration, dynamic dashboards, and SSO integration with external IdP.</p>
+          <div class="project-tags">
+            <span class="tag">Experience Cloud</span>
+            <span class="tag">LWC</span>
+            <span class="tag">SSO</span>
+          </div>
+          <a href="#" class="project-link">View Case Study →</a>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="project-card">
+          <div class="project-card-glow"></div>
+          <p class="project-num">03</p>
+          <p class="project-icon">🤖</p>
+          <h3 class="project-title">AI-Powered Service Automation</h3>
+          <p class="project-desc">Integrated Einstein Bots with Service Cloud to automate tier-1 support queries. Reduced average handle time by 52% within 90 days of deployment.</p>
+          <div class="project-tags">
+            <span class="tag">Service Cloud</span>
+            <span class="tag">Einstein</span>
+            <span class="tag">Omni-Channel</span>
+          </div>
+          <a href="#" class="project-link">View Case Study →</a>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="project-card">
+          <div class="project-card-glow"></div>
+          <p class="project-num">04</p>
+          <p class="project-icon">🔗</p>
+          <h3 class="project-title">ERP–Salesforce Integration</h3>
+          <p class="project-desc">Real-time bi-directional sync between SAP S/4HANA and Salesforce using MuleSoft. Managed 2M+ daily record syncs with zero downtime SLA.</p>
+          <div class="project-tags">
+            <span class="tag">MuleSoft</span>
+            <span class="tag">REST API</span>
+            <span class="tag">SAP</span>
+          </div>
+          <a href="#" class="project-link">View Case Study →</a>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="project-card">
+          <div class="project-card-glow"></div>
+          <p class="project-num">05</p>
+          <p class="project-icon">📊</p>
+          <h3 class="project-title">Revenue Intelligence Dashboard</h3>
+          <p class="project-desc">Built bespoke LWC analytics dashboard pulling CRM Analytics data. Gave exec team real-time pipeline visibility and forecast accuracy up to 91%.</p>
+          <div class="project-tags">
+            <span class="tag">CRM Analytics</span>
+            <span class="tag">LWC</span>
+            <span class="tag">SAQL</span>
+          </div>
+          <a href="#" class="project-link">View Case Study →</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <span class="footer-copy">© 2025 Your Name — All rights reserved</span>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="projects.html">Projects</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <span class="footer-copy" style="color:rgba(0,161,224,0.4);">Built with Salesforce expertise</span>
+  </footer>
+
+  <script>
+    // ── CUSTOM CURSOR ──
+    const cur = document.getElementById('cursor');
+    const ring = document.getElementById('cursor-ring');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+    (function animate() {
+      rx += (mx - rx) * 0.14;
+      ry += (my - ry) * 0.14;
+      cur.style.left = mx + 'px'; cur.style.top = my + 'px';
+      ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+      requestAnimationFrame(animate);
+    })();
+
+    // ── SCROLL-triggered fade-up for sections ──
+    const fadeEls = document.querySelectorAll('.project-card');
+    const fadeObs = new IntersectionObserver(entries => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => {
+            e.target.style.opacity = '1';
+            e.target.style.transform = 'translateY(0)';
+          }, 80 * i);
+          fadeObs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    fadeEls.forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(24px)';
+      el.style.transition = 'opacity 0.7s ease, transform 0.7s ease';
+      fadeObs.observe(el);
+    });
+  </script>
+
+</body>
+</html>
