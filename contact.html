@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact — Monty Mhango</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --black:       #080808;
+      --black-mid:   #0f0f0f;
+      --black-soft:  #161616;
+      --border:      rgba(255,255,255,0.06);
+      --white:       #f5f3ef;
+      --white-dim:   rgba(245,243,239,0.55);
+      --white-faint: rgba(245,243,239,0.18);
+      --accent:      #00A1E0;   /* Salesforce blue */
+      --accent2:     #032D60;   /* Salesforce deep navy */
+      --accent-glow: rgba(0,161,224,0.18);
+      --gold:        #C9A84C;
+      --radius:      2px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'Syne', sans-serif;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ── CUSTOM CURSOR ── */
+    #cursor {
+      position: fixed;
+      width: 10px; height: 10px;
+      background: var(--accent);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%,-50%);
+      transition: transform 0.08s ease, width 0.25s ease, height 0.25s ease, background 0.25s ease;
+      mix-blend-mode: screen;
+    }
+    #cursor-ring {
+      position: fixed;
+      width: 36px; height: 36px;
+      border: 1px solid rgba(0,161,224,0.45);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%,-50%);
+      transition: transform 0.18s ease, width 0.3s ease, height 0.3s ease, border-color 0.3s ease;
+    }
+    body:has(a:hover) #cursor,
+    body:has(button:hover) #cursor { width: 18px; height: 18px; background: var(--gold); }
+    body:has(a:hover) #cursor-ring,
+    body:has(button:hover) #cursor-ring { width: 52px; height: 52px; border-color: var(--gold); }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.028;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    /* ── NAVIGATION ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 28px 56px;
+      background: linear-gradient(to bottom, rgba(8,8,8,0.95) 0%, transparent 100%);
+      backdrop-filter: blur(0px);
+    }
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem;
+      font-weight: 300;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--white);
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--accent); }
+
+    .nav-links {
+      display: flex;
+      gap: 48px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--white-dim);
+      text-decoration: none;
+      position: relative;
+      transition: color 0.3s;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0;
+      width: 0; height: 1px;
+      background: var(--accent);
+      transition: width 0.35s ease;
+    }
+    .nav-links a:hover { color: var(--white); }
+    .nav-links a:hover::after { width: 100%; }
+
+    .nav-cta {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      text-decoration: none;
+      border: 1px solid rgba(0,161,224,0.35);
+      padding: 10px 24px;
+      transition: background 0.3s, color 0.3s, border-color 0.3s;
+    }
+    .nav-cta:hover {
+      background: var(--accent);
+      color: var(--black);
+      border-color: var(--accent);
+    }
+
+    /* ── MOBILE MENU ── */
+    .nav-toggle {
+      display: none;
+      flex-direction: column;
+      justify-content: space-around;
+      width: 30px;
+      height: 24px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      z-index: 1001;
+    }
+    .hamburger-line {
+      width: 100%;
+      height: 2px;
+      background: var(--white);
+      transition: all 0.3s ease;
+      transform-origin: center;
+    }
+    .nav-toggle.active .hamburger-line:nth-child(1) {
+      transform: rotate(45deg) translate(6px, 6px);
+    }
+    .nav-toggle.active .hamburger-line:nth-child(2) {
+      opacity: 0;
+    }
+    .nav-toggle.active .hamburger-line:nth-child(3) {
+      transform: rotate(-45deg) translate(6px, -6px);
+    }
+
+    .mobile-menu {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: rgba(8,8,8,0.98);
+      backdrop-filter: blur(10px);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+      padding: 100px 20px;
+    }
+    .mobile-menu.active {
+      transform: translateX(0);
+    }
+    .mobile-menu-links {
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+      text-align: center;
+      list-style: none;
+    }
+    .mobile-menu-links a {
+      font-family: 'DM Mono', monospace;
+      font-size: 1.2rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--white-dim);
+      text-decoration: none;
+      transition: color 0.3s;
+      padding: 10px 0;
+    }
+    .mobile-menu-links a:hover,
+    .mobile-menu-links a.active {
+      color: var(--accent);
+    }
+    .mobile-menu-cta {
+      margin-top: 60px;
+      padding: 16px 32px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.9rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      text-decoration: none;
+      border: 1px solid rgba(0,161,224,0.35);
+      transition: background 0.3s, color 0.3s, border-color 0.3s;
+    }
+    .mobile-menu-cta:hover {
+      background: var(--accent);
+      color: var(--black);
+      border-color: var(--accent);
+    }
+
+    /* Body scroll lock when menu is open */
+    body.menu-open {
+      overflow: hidden;
+    }
+
+    /* ── SECTION SHARED ── */
+    section { position: relative; }
+    .section-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 120px 56px;
+    }
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .section-label-line { width: 32px; height: 1px; background: var(--accent); }
+    .section-label span {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .section-heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.6rem, 5vw, 4.4rem);
+      font-weight: 300;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+    .section-heading em { font-style: italic; color: var(--white-dim); }
+
+    /* ── CONTACT ── */
+    #contact { background: var(--black-mid); }
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+      margin-top: 60px;
+    }
+    .contact-info { }
+    .contact-tagline {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.25rem;
+      font-weight: 300;
+      line-height: 1.8;
+      color: var(--white-dim);
+      margin-bottom: 52px;
+    }
+    .contact-links { display: flex; flex-direction: column; gap: 20px; }
+    .contact-link-item {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+      text-decoration: none;
+      transition: border-color 0.3s;
+    }
+    .contact-link-item:hover { border-color: rgba(0,161,224,0.3); }
+    .contact-link-icon {
+      width: 42px; height: 42px;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+      transition: border-color 0.3s, background 0.3s;
+    }
+    .contact-link-item:hover .contact-link-icon {
+      border-color: var(--accent);
+      background: rgba(0,161,224,0.07);
+    }
+    .contact-link-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--white-faint);
+      margin-bottom: 2px;
+    }
+    .contact-link-value {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--white);
+    }
+
+    /* Contact form */
+    .contact-form { display: flex; flex-direction: column; gap: 20px; }
+    .form-group { display: flex; flex-direction: column; gap: 8px; }
+    .form-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--white-faint);
+    }
+    .form-input, .form-textarea {
+      background: var(--black-soft);
+      border: 1px solid var(--border);
+      color: var(--white);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1rem;
+      font-weight: 300;
+      padding: 14px 18px;
+      outline: none;
+      transition: border-color 0.3s;
+      resize: none;
+    }
+    .form-input:focus, .form-textarea:focus { border-color: rgba(0,161,224,0.5); }
+    .form-input::placeholder, .form-textarea::placeholder { color: var(--white-faint); }
+    .form-textarea { height: 120px; }
+    .form-submit {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      background: var(--accent);
+      color: var(--black);
+      border: none;
+      padding: 16px;
+      cursor: none;
+      font-weight: 400;
+      transition: background 0.3s, transform 0.3s;
+    }
+    .form-submit:hover { background: #12b8f5; transform: translateY(-2px); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--black);
+      border-top: 1px solid var(--border);
+      padding: 36px 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .footer-copy {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--white-faint);
+    }
+    .footer-links { display: flex; gap: 32px; }
+    .footer-links a {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--white-faint);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .footer-links a:hover { color: var(--accent); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-14px); }
+    }
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.4; }
+      50%       { opacity: 1; }
+    }
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1200px) {
+      .section-inner { padding: 100px 40px; }
+      footer { padding: 36px 40px; }
+    }
+
+    @media (max-width: 900px) {
+      nav { padding: 22px 28px; }
+      .nav-links { gap: 28px; }
+      .contact-grid { grid-template-columns: 1fr; }
+      .section-inner { padding: 80px 28px; }
+      .section-heading { font-size: 2.2rem; }
+      footer { flex-direction: column; gap: 20px; text-align: center; }
+    }
+
+    @media (max-width: 768px) {
+      nav { padding: 18px 20px; }
+      .nav-links { display: none; }
+      .nav-cta { display: none; }
+      .nav-toggle { display: flex; }
+      .section-inner { padding: 60px 20px; }
+      .section-heading { font-size: 2rem; line-height: 1.2; }
+      .contact-grid { gap: 40px; }
+      .contact-tagline { font-size: 1.1rem; }
+      .contact-form { gap: 20px; }
+      .form-group { gap: 8px; }
+      .form-input, .form-textarea { font-size: 1rem; padding: 12px; }
+      .form-submit { padding: 14px 24px; font-size: 1rem; }
+      .contact-links { gap: 16px; }
+      .contact-link { padding: 14px; }
+      .contact-link-icon { width: 22px; height: 22px; }
+      footer { padding: 32px 20px; }
+      .footer-links { gap: 24px; }
+    }
+
+    @media (max-width: 480px) {
+      nav { padding: 16px 16px; }
+      .nav-logo { font-size: 1.1rem; }
+      .nav-links { display: none; }
+      .nav-cta { display: none; }
+      .nav-toggle { display: flex; }
+      .section-inner { padding: 50px 16px; }
+      .section-heading { font-size: 1.8rem; }
+      .contact-grid { gap: 30px; }
+      .contact-tagline { font-size: 1rem; }
+      .contact-form { gap: 16px; }
+      .form-group { gap: 6px; }
+      .form-label { font-size: 0.9rem; }
+      .form-input, .form-textarea { font-size: 0.95rem; padding: 10px; }
+      .form-submit { padding: 12px 20px; font-size: 0.95rem; width: 100%; }
+      .contact-links { gap: 12px; }
+      .contact-link { padding: 12px; }
+      .contact-link-icon { width: 20px; height: 20px; }
+      .contact-link-text { font-size: 0.85rem; }
+      footer { padding: 28px 16px; }
+      .footer-links { gap: 20px; }
+      .footer-links a { font-size: 0.75rem; }
+    }
+
+    @media (max-width: 360px) {
+      .section-inner { padding: 40px 12px; }
+      .section-heading { font-size: 1.6rem; }
+      .contact-grid { gap: 24px; }
+      .contact-tagline { font-size: 0.95rem; }
+      .contact-form { gap: 12px; }
+      .form-input, .form-textarea { font-size: 0.9rem; padding: 8px; }
+      .form-submit { padding: 10px 16px; font-size: 0.9rem; }
+      .contact-links { gap: 10px; }
+      .contact-link { padding: 10px; min-height: 44px; }
+      .contact-link-icon { width: 18px; height: 18px; }
+      .contact-link-text { font-size: 0.8rem; }
+      footer { padding: 24px 12px; }
+    }
+
+    /* Touch-friendly improvements */
+    @media (hover: none) and (pointer: coarse) {
+      .form-submit, .contact-link {
+        min-height: 44px;
+        padding: 12px 16px;
+      }
+      .nav-links a, .footer-links a {
+        min-height: 44px;
+        padding: 8px 12px;
+        display: flex;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="cursor"></div>
+  <div id="cursor-ring"></div>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" href="index.html">MM<span>·</span>Portfolio</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <a class="nav-cta" href="contact.html">Hire Me</a>
+    <button class="nav-toggle" aria-label="Toggle navigation menu">
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+    </button>
+  </nav>
+
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu">
+    <ul class="mobile-menu-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <a class="mobile-menu-cta" href="contact.html">Hire Me</a>
+  </div>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="section-inner">
+      <div class="section-label">
+        <div class="section-label-line"></div>
+        <span>Contact</span>
+      </div>
+      <h2 class="section-heading">Let's build something<br/><em>that works</em></h2>
+
+      <div class="contact-grid">
+        <div class="contact-info">
+          <p class="contact-tagline">
+            Whether you're looking to automate a workflow, implement Salesforce, or build something from the ground up — I'd love to hear about it. I'm always looking for interesting problems to solve.
+          </p>
+          <div class="contact-links">
+            <a class="contact-link-item" href="mailto:montymhango01@gmail.com">
+              <div class="contact-link-icon">✉</div>
+              <div>
+                <div class="contact-link-label">Email</div>
+                <div class="contact-link-value">montymhango01@gmail.com</div>
+              </div>
+            </a>
+            <a class="contact-link-item" href="https://linkedin.com/in/montymhango" target="_blank">
+              <div class="contact-link-icon">in</div>
+              <div>
+                <div class="contact-link-label">LinkedIn</div>
+                <div class="contact-link-value">linkedin.com/in/montymhango</div>
+              </div>
+            </a>
+            <a class="contact-link-item" href="https://www.salesforce.com/trailblazer/ghl72rm7e4dpm9wa4c" target="_blank">
+              <div class="contact-link-icon">☁</div>
+              <div>
+                <div class="contact-link-label">Trailblazer</div>
+                <div class="contact-link-value">trailhead.salesforce.com/me/monty</div>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <form class="contact-form" onsubmit="return false;">
+          <div class="form-group">
+            <label class="form-label">Name</label>
+            <input class="form-input" type="text" placeholder="Your full name" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input class="form-input" type="email" placeholder="your@email.com" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Project type</label>
+            <input class="form-input" type="text" placeholder="e.g. Salesforce integration, web app, automation" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Message</label>
+            <textarea class="form-textarea" placeholder="Tell me about your project…"></textarea>
+          </div>
+          <button class="form-submit" type="submit">Send Message →</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <span class="footer-copy">© 2026 Monty Mhango — All rights reserved</span>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="projects.html">Projects</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <span class="footer-copy" style="color:rgba(0,161,224,0.4);">Q1 2026 · Umuzi · Johannesburg</span>
+  </footer>
+
+  <script>
+    // ── MOBILE MENU TOGGLE ──
+    const navToggle = document.querySelector('.nav-toggle');
+    const mobileMenu = document.querySelector('.mobile-menu');
+    const body = document.body;
+
+    function toggleMobileMenu() {
+      navToggle.classList.toggle('active');
+      mobileMenu.classList.toggle('active');
+      body.classList.toggle('menu-open');
+    }
+
+    function closeMobileMenu() {
+      navToggle.classList.remove('active');
+      mobileMenu.classList.remove('active');
+      body.classList.remove('menu-open');
+    }
+
+    navToggle.addEventListener('click', toggleMobileMenu);
+
+    // Close menu when clicking on a link
+    document.querySelectorAll('.mobile-menu-links a').forEach(link => {
+      link.addEventListener('click', closeMobileMenu);
+    });
+
+    // Close menu when clicking outside
+    mobileMenu.addEventListener('click', (e) => {
+      if (e.target === mobileMenu) {
+        closeMobileMenu();
+      }
+    });
+
+    // Close menu on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && mobileMenu.classList.contains('active')) {
+        closeMobileMenu();
+      }
+    });
+
+    // ── CUSTOM CURSOR ──
+    const cur = document.getElementById('cursor');
+    const ring = document.getElementById('cursor-ring');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+    (function animate() {
+      rx += (mx - rx) * 0.14;
+      ry += (my - ry) * 0.14;
+      cur.style.left = mx + 'px'; cur.style.top = my + 'px';
+      ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+      requestAnimationFrame(animate);
+    })();
+
+    // ── SCROLL-triggered fade-up for sections ──
+    const fadeEls = document.querySelectorAll('.contact-link-item');
+    const fadeObs = new IntersectionObserver(entries => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => {
+            e.target.style.opacity = '1';
+            e.target.style.transform = 'translateY(0)';
+          }, 80 * i);
+          fadeObs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    

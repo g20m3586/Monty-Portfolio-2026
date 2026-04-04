@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — Monty Mhango</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --black:       #080808;
+      --black-mid:   #0f0f0f;
+      --black-soft:  #161616;
+      --border:      rgba(255,255,255,0.06);
+      --white:       #f5f3ef;
+      --white-dim:   rgba(245,243,239,0.55);
+      --white-faint: rgba(245,243,239,0.18);
+      --accent:      #00A1E0;   /* Salesforce blue */
+      --accent2:     #032D60;   /* Salesforce deep navy */
+      --accent-glow: rgba(0,161,224,0.18);
+      --gold:        #C9A84C;
+      --radius:      2px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'Syne', sans-serif;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ── CUSTOM CURSOR ── */
+    #cursor {
+      position: fixed;
+      width: 10px; height: 10px;
+      background: var(--accent);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%,-50%);
+      transition: transform 0.08s ease, width 0.25s ease, height 0.25s ease, background 0.25s ease;
+      mix-blend-mode: screen;
+    }
+    #cursor-ring {
+      position: fixed;
+      width: 36px; height: 36px;
+      border: 1px solid rgba(0,161,224,0.45);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%,-50%);
+      transition: transform 0.18s ease, width 0.3s ease, height 0.3s ease, border-color 0.3s ease;
+    }
+    body:has(a:hover) #cursor,
+    body:has(button:hover) #cursor { width: 18px; height: 18px; background: var(--gold); }
+    body:has(a:hover) #cursor-ring,
+    body:has(button:hover) #cursor-ring { width: 52px; height: 52px; border-color: var(--gold); }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.028;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    /* ── NAVIGATION ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 28px 56px;
+      background: linear-gradient(to bottom, rgba(8,8,8,0.95) 0%, transparent 100%);
+      backdrop-filter: blur(0px);
+    }
+    .nav-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem;
+      font-weight: 300;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--white);
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--accent); }
+
+    .nav-links {
+      display: flex;
+      gap: 48px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--white-dim);
+      text-decoration: none;
+      position: relative;
+      transition: color 0.3s;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0;
+      width: 0; height: 1px;
+      background: var(--accent);
+      transition: width 0.35s ease;
+    }
+    .nav-links a:hover { color: var(--white); }
+    .nav-links a:hover::after { width: 100%; }
+
+    .nav-cta {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      text-decoration: none;
+      border: 1px solid rgba(0,161,224,0.35);
+      padding: 10px 24px;
+      transition: background 0.3s, color 0.3s, border-color 0.3s;
+    }
+    .nav-cta:hover {
+      background: var(--accent);
+      color: var(--black);
+      border-color: var(--accent);
+    }
+
+    /* ── MOBILE MENU ── */
+    .nav-toggle {
+      display: none;
+      flex-direction: column;
+      justify-content: space-around;
+      width: 30px;
+      height: 24px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      z-index: 1001;
+    }
+    .hamburger-line {
+      width: 100%;
+      height: 2px;
+      background: var(--white);
+      transition: all 0.3s ease;
+      transform-origin: center;
+    }
+    .nav-toggle.active .hamburger-line:nth-child(1) {
+      transform: rotate(45deg) translate(6px, 6px);
+    }
+    .nav-toggle.active .hamburger-line:nth-child(2) {
+      opacity: 0;
+    }
+    .nav-toggle.active .hamburger-line:nth-child(3) {
+      transform: rotate(-45deg) translate(6px, -6px);
+    }
+
+    .mobile-menu {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: rgba(8,8,8,0.98);
+      backdrop-filter: blur(10px);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+      padding: 100px 20px;
+    }
+    .mobile-menu.active {
+      transform: translateX(0);
+    }
+    .mobile-menu-links {
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+      text-align: center;
+      list-style: none;
+    }
+    .mobile-menu-links a {
+      font-family: 'DM Mono', monospace;
+      font-size: 1.2rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--white-dim);
+      text-decoration: none;
+      transition: color 0.3s;
+      padding: 10px 0;
+    }
+    .mobile-menu-links a:hover,
+    .mobile-menu-links a.active {
+      color: var(--accent);
+    }
+    .mobile-menu-cta {
+      margin-top: 60px;
+      padding: 16px 32px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.9rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      text-decoration: none;
+      border: 1px solid rgba(0,161,224,0.35);
+      transition: background 0.3s, color 0.3s, border-color 0.3s;
+    }
+    .mobile-menu-cta:hover {
+      background: var(--accent);
+      color: var(--black);
+      border-color: var(--accent);
+    }
+
+    /* Body scroll lock when menu is open */
+    body.menu-open {
+      overflow: hidden;
+    }
+
+    /* ── SECTION SHARED ── */
+    section { position: relative; }
+    .section-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 120px 56px;
+    }
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .section-label-line { width: 32px; height: 1px; background: var(--accent); }
+    .section-label span {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .section-heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.6rem, 5vw, 4.4rem);
+      font-weight: 300;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+    .section-heading em { font-style: italic; color: var(--white-dim); }
+
+    /* ── ABOUT ── */
+    #about { background: var(--black-mid); }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+      margin-top: 60px;
+    }
+    .about-body {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.18rem;
+      font-weight: 300;
+      line-height: 1.85;
+      color: var(--white-dim);
+    }
+    .about-body p + p { margin-top: 22px; }
+    .about-body strong { color: var(--white); font-weight: 400; }
+
+    .certifications-title {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--white-faint);
+      margin-bottom: 24px;
+    }
+    .cert-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .cert-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 20px;
+      border: 1px solid var(--border);
+      background: var(--black-soft);
+      transition: border-color 0.3s, background 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .cert-item::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 2px;
+      background: var(--accent);
+    }
+    .cert-item:hover { border-color: rgba(0,161,224,0.3); background: rgba(0,161,224,0.04); }
+    .cert-icon { font-size: 1.2rem; }
+    .cert-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--white);
+      letter-spacing: 0.04em;
+    }
+    .cert-year {
+      margin-left: auto;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--white-faint);
+    }
+
+    /* Skills bar */
+    .skills-section { margin-top: 52px; }
+    .skill-row { margin-bottom: 20px; }
+    .skill-meta {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .skill-name {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--white-dim);
+    }
+    .skill-pct {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--accent);
+    }
+    .skill-track {
+      height: 2px;
+      background: rgba(255,255,255,0.07);
+      position: relative;
+    }
+    .skill-fill {
+      height: 100%;
+      background: linear-gradient(to right, var(--accent), #12b8f5);
+      width: 0;
+      transition: width 1.4s ease;
+      position: relative;
+    }
+    .skill-fill::after {
+      content: '';
+      position: absolute;
+      right: 0; top: 50%;
+      transform: translateY(-50%);
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #12b8f5;
+      box-shadow: 0 0 8px rgba(0,161,224,0.7);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--black);
+      border-top: 1px solid var(--border);
+      padding: 36px 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .footer-copy {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--white-faint);
+    }
+    .footer-links { display: flex; gap: 32px; }
+    .footer-links a {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--white-faint);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .footer-links a:hover { color: var(--accent); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-14px); }
+    }
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.4; }
+      50%       { opacity: 1; }
+    }
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1200px) {
+      .section-inner { padding: 100px 40px; }
+      footer { padding: 36px 40px; }
+    }
+
+    @media (max-width: 900px) {
+      nav { padding: 22px 28px; }
+      .nav-links { gap: 28px; }
+      .about-grid { grid-template-columns: 1fr; }
+      .section-inner { padding: 80px 28px; }
+      .section-heading { font-size: 2.2rem; }
+      footer { flex-direction: column; gap: 20px; text-align: center; }
+    }
+
+    @media (max-width: 768px) {
+      nav { padding: 18px 20px; }
+      .nav-links { display: none; }
+      .nav-cta { display: none; }
+      .nav-toggle { display: flex; }
+      .section-inner { padding: 60px 20px; }
+      .section-heading { font-size: 2rem; line-height: 1.2; }
+      .about-grid { gap: 40px; }
+      .about-body p { font-size: 1rem; line-height: 1.6; }
+      .skill-bars { gap: 20px; }
+      .skill-bar { height: 8px; }
+      .cert-list { gap: 16px; }
+      .cert-item { padding: 16px; }
+      footer { padding: 32px 20px; }
+      .footer-links { gap: 24px; }
+    }
+
+    @media (max-width: 480px) {
+      nav { padding: 16px 16px; }
+      .nav-logo { font-size: 1.1rem; }
+      .nav-links { display: none; }
+      .nav-cta { display: none; }
+      .nav-toggle { display: flex; }
+      .section-inner { padding: 50px 16px; }
+      .section-heading { font-size: 1.8rem; }
+      .about-grid { gap: 30px; }
+      .about-body p { font-size: 0.95rem; }
+      .skill-bars { gap: 16px; }
+      .skill-bar { height: 6px; }
+      .skill-label { font-size: 0.85rem; }
+      .cert-list { gap: 12px; }
+      .cert-item { padding: 12px; }
+      .cert-name { font-size: 0.9rem; }
+      .cert-date { font-size: 0.8rem; }
+      footer { padding: 28px 16px; }
+      .footer-links { gap: 20px; }
+      .footer-links a { font-size: 0.75rem; }
+    }
+
+    @media (max-width: 360px) {
+      .section-inner { padding: 40px 12px; }
+      .section-heading { font-size: 1.6rem; }
+      .about-grid { gap: 24px; }
+      .about-body p { font-size: 0.9rem; }
+      .skill-bars { gap: 12px; }
+      .cert-list { gap: 10px; }
+      .cert-item { padding: 10px; min-height: 44px; }
+      .cert-name { font-size: 0.85rem; }
+      .cert-date { font-size: 0.75rem; }
+      footer { padding: 24px 12px; }
+    }
+
+    /* Touch-friendly improvements */
+    @media (hover: none) and (pointer: coarse) {
+      .nav-links a, .footer-links a {
+        min-height: 44px;
+        padding: 8px 12px;
+        display: flex;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="cursor"></div>
+  <div id="cursor-ring"></div>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" href="index.html">MM<span>·</span>Portfolio</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <a class="nav-cta" href="contact.html">Hire Me</a>
+    <button class="nav-toggle" aria-label="Toggle navigation menu">
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+      <span class="hamburger-line"></span>
+    </button>
+  </nav>
+
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu">
+    <ul class="mobile-menu-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="projects.html">Projects</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <a class="mobile-menu-cta" href="contact.html">Hire Me</a>
+  </div>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="section-inner">
+      <div class="section-label">
+        <div class="section-label-line"></div>
+        <span>About</span>
+      </div>
+      <h2 class="section-heading">Driven by curiosity,<br/><em>built on momentum</em></h2>
+
+      <div class="about-grid">
+        <div>
+          <div class="about-body">
+            <p>I am <strong>Monty Mhango</strong>, a developer and Salesforce practitioner based in Johannesburg, currently working at Umuzi. In Q1 2026 I shipped two live projects, integrated four systems, and trained 15+ staff — all while learning on the job and moving fast.</p>
+            <p>I believe good engineering is about <strong>making things that actually work</strong> for real people. Whether it's an automation pipeline flowing form submissions into a CRM, or a tax calculator helping South Africans file correctly — the measure of success is always whether it works in the real world.</p>
+            <p>My one-word description of Q1: <strong>Momentum.</strong> I came in uncertain, and left the quarter with two live projects, a much deeper understanding of Salesforce's security model, and a healthy respect for FIFO logic at 11pm.</p>
+          </div>
+
+          <div class="skills-section">
+            <div class="skill-row">
+              <div class="skill-meta"><span class="skill-name">Salesforce Administration</span><span class="skill-pct">78%</span></div>
+              <div class="skill-track"><div class="skill-fill" data-w="78"></div></div>
+            </div>
+            <div class="skill-row">
+              <div class="skill-meta"><span class="skill-name">No-Code Automation (Make.com)</span><span class="skill-pct">75%</span></div>
+              <div class="skill-track"><div class="skill-fill" data-w="75"></div></div>
+            </div>
+            <div class="skill-row">
+              <div class="skill-meta"><span class="skill-name">React.js Frontend Development</span><span class="skill-pct">70%</span></div>
+              <div class="skill-track"><div class="skill-fill" data-w="70"></div></div>
+            </div>
+            <div class="skill-row">
+              <div class="skill-meta"><span class="skill-name">PHP / Symfony Backend</span><span class="skill-pct">65%</span></div>
+              <div class="skill-track"><div class="skill-fill" data-w="65"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <p class="certifications-title">Q1 2026 — Key Milestones</p>
+          <ul class="cert-list">
+            <li class="cert-item">
+              <span class="cert-icon">🔧</span>
+              <span class="cert-name">Webflow → Salesforce integration live via Make.com</span>
+              <span class="cert-year">Jan 2026</span>
+            </li>
+            <li class="cert-item">
+              <span class="cert-icon">📋</span>
+              <span class="cert-name">Full Salesforce field audit completed (19 → 1 gap found)</span>
+              <span class="cert-year">Jan 2026</span>
+            </li>
+            <li class="cert-item">
+              <span class="cert-icon">🔐</span>
+              <span class="cert-name">Permission Sets &amp; Groups configured for 3 BD personas</span>
+              <span class="cert-year">Feb 2026</span>
+            </li>
+            <li class="cert-item">
+              <span class="cert-icon">🧮</span>
+              <span class="cert-name">TaxTim crypto FIFO calculator submitted as Tech Lead</span>
+              <span class="cert-year">Mar 2026</span>
+            </li>
+            <li class="cert-item">
+              <span class="cert-icon">🎓</span>
+              <span class="cert-name">Trail Tracker deployed; 15+ staff onboarded to Trailhead</span>
+              <span class="cert-year">Mar 2026</span>
+            </li>
+            <li class="cert-item">
+              <span class="cert-icon">🤝</span>
+              <span class="cert-name">UAT &amp; Production environment parity verified with Arcsen</span>
+              <span class="cert-year">Mar 2026</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <span class="footer-copy">© 2026 Monty Mhango — All rights reserved</span>
+    <div class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="projects.html">Projects</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <span class="footer-copy" style="color:rgba(0,161,224,0.4);">Q1 2026 · Umuzi · Johannesburg</span>
+  </footer>
+
+  <script>
+    // ── MOBILE MENU TOGGLE ──
+    const navToggle = document.querySelector('.nav-toggle');
+    const mobileMenu = document.querySelector('.mobile-menu');
+    const body = document.body;
+
+    function toggleMobileMenu() {
+      navToggle.classList.toggle('active');
+      mobileMenu.classList.toggle('active');
+      body.classList.toggle('menu-open');
+    }
+
+    function closeMobileMenu() {
+      navToggle.classList.remove('active');
+      mobileMenu.classList.remove('active');
+      body.classList.remove('menu-open');
+    }
+
+    navToggle.addEventListener('click', toggleMobileMenu);
+
+    // Close menu when clicking on a link
+    document.querySelectorAll('.mobile-menu-links a').forEach(link => {
+      link.addEventListener('click', closeMobileMenu);
+    });
+
+    // Close menu when clicking outside
+    mobileMenu.addEventListener('click', (e) => {
+      if (e.target === mobileMenu) {
+        closeMobileMenu();
+      }
+    });
+
+    // Close menu on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && mobileMenu.classList.contains('active')) {
+        closeMobileMenu();
+      }
+    });
+
+    // ── CUSTOM CURSOR ──
+    const cur = document.getElementById('cursor');
+    const ring = document.getElementById('cursor-ring');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+    (function animate() {
+      rx += (mx - rx) * 0.14;
+      ry += (my - ry) * 0.14;
+      cur.style.left = mx + 'px'; cur.style.top = my + 'px';
+      ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+      requestAnimationFrame(animate);
+    })();
+
+    // ── SKILL BARS on scroll ──
+    const fills = document.querySelectorAll('.skill-fill');
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.style.width = e.target.dataset.w + '%';
+          obs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.3 });
+    fills.forEach(f => obs.observe(f));
+
+    // ── SCROLL-triggered fade-up for sections ──
+    const fadeEls = document.querySelectorAll('.cert-item');
+    const fadeObs = new IntersectionObserver(entries => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => {
+            e.target.style.opacity = '1';
+            e.target.style.transform = 'translateY(0)';
+          }, 80 * i);
+          fadeObs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    fadeEls.forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(24px)';
+      el.style.transition = 'opacity 0.7s ease, transform 0.7s ease';
+      fadeObs.observe(el);
+    });
+  </script>
+
+</body>
+</html>
