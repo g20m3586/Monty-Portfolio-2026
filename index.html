@@ -1,1233 +1,1239 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Monty Mhango — Q1 2026 Portfolio</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --black:       #080808;
-      --black-mid:   #0f0f0f;
-      --black-soft:  #161616;
-      --border:      rgba(255,255,255,0.06);
-      --white:       #f5f3ef;
-      --white-dim:   rgba(245,243,239,0.55);
-      --white-faint: rgba(245,243,239,0.18);
-      --accent:      #00A1E0;   /* Salesforce blue */
-      --accent2:     #032D60;   /* Salesforce deep navy */
-      --accent-glow: rgba(0,161,224,0.18);
-      --gold:        #C9A84C;
-      --radius:      2px;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Q1 Deep Dive — Monty Mhango</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --black:       #080808;
+    --black-mid:   #0f0f0f;
+    --black-soft:  #161616;
+    --border:      rgba(255,255,255,0.06);
+    --white:       #f5f3ef;
+    --white-dim:   rgba(245,243,239,0.55);
+    --white-faint: rgba(245,243,239,0.18);
+    --accent:      #00A1E0;
+    --accent2:     #032D60;
+    --accent-glow: rgba(0,161,224,0.18);
+    --gold:        #C9A84C;
+    --gold-dim:    rgba(201,168,76,0.12);
+  }
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
 
-    html { scroll-behavior: smooth; }
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Syne', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
 
-    body {
-      background: var(--black);
-      color: var(--white);
-      font-family: 'Syne', sans-serif;
-      overflow-x: hidden;
-      cursor: none;
-    }
+  /* ── CURSOR ── */
+  #cursor {
+    position: fixed; width: 10px; height: 10px;
+    background: var(--accent); border-radius: 50%;
+    pointer-events: none; z-index: 9999;
+    transform: translate(-50%,-50%);
+    transition: width 0.25s, height 0.25s, background 0.25s;
+    mix-blend-mode: screen;
+  }
+  #cursor-ring {
+    position: fixed; width: 36px; height: 36px;
+    border: 1px solid rgba(0,161,224,0.45); border-radius: 50%;
+    pointer-events: none; z-index: 9998;
+    transform: translate(-50%,-50%);
+    transition: width 0.3s, height 0.3s, border-color 0.3s;
+  }
+  body:has(a:hover) #cursor,
+  body:has(button:hover) #cursor { width: 18px; height: 18px; background: var(--gold); }
+  body:has(a:hover) #cursor-ring,
+  body:has(button:hover) #cursor-ring { width: 52px; height: 52px; border-color: var(--gold); }
 
-    /* ── CUSTOM CURSOR ── */
-    #cursor {
-      position: fixed;
-      width: 10px; height: 10px;
-      background: var(--accent);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9999;
-      transform: translate(-50%,-50%);
-      transition: transform 0.08s ease, width 0.25s ease, height 0.25s ease, background 0.25s ease;
-      mix-blend-mode: screen;
-    }
-    #cursor-ring {
-      position: fixed;
-      width: 36px; height: 36px;
-      border: 1px solid rgba(0,161,224,0.45);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9998;
-      transform: translate(-50%,-50%);
-      transition: transform 0.18s ease, width 0.3s ease, height 0.3s ease, border-color 0.3s ease;
-    }
-    body:has(a:hover) #cursor,
-    body:has(button:hover) #cursor { width: 18px; height: 18px; background: var(--gold); }
-    body:has(a:hover) #cursor-ring,
-    body:has(button:hover) #cursor-ring { width: 52px; height: 52px; border-color: var(--gold); }
+  /* ── NOISE ── */
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    opacity: 0.028; pointer-events: none; z-index: 1000;
+  }
 
-    /* ── NOISE OVERLAY ── */
-    body::before {
-      content: '';
-      position: fixed; inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-      opacity: 0.028;
-      pointer-events: none;
-      z-index: 1000;
-    }
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 28px 56px;
+    background: linear-gradient(to bottom, rgba(8,8,8,0.95) 0%, transparent 100%);
+  }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.15rem; font-weight: 300;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--white); text-decoration: none;
+  }
+  .nav-logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 48px; list-style: none; }
+  .nav-links a {
+    font-family: 'DM Mono', monospace; font-size: 0.72rem;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--white-dim); text-decoration: none;
+    position: relative; transition: color 0.3s;
+  }
+  .nav-links a::after {
+    content: ''; position: absolute; bottom: -4px; left: 0;
+    width: 0; height: 1px; background: var(--accent);
+    transition: width 0.35s ease;
+  }
+  .nav-links a:hover { color: var(--white); }
+  .nav-links a:hover::after { width: 100%; }
+  .nav-cta {
+    font-family: 'DM Mono', monospace; font-size: 0.7rem;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--accent); text-decoration: none;
+    border: 1px solid rgba(0,161,224,0.35); padding: 10px 24px;
+    transition: background 0.3s, color 0.3s;
+  }
+  .nav-cta:hover { background: var(--accent); color: var(--black); }
 
-    /* ── NAVIGATION ── */
-    nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 500;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 28px 56px;
-      background: linear-gradient(to bottom, rgba(8,8,8,0.95) 0%, transparent 100%);
-      backdrop-filter: blur(0px);
-    }
-    .nav-logo {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.15rem;
-      font-weight: 300;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--white);
-      text-decoration: none;
-    }
-    .nav-logo span { color: var(--accent); }
+  /* ── HERO ── */
+  #hero {
+    position: relative; min-height: 100vh;
+    display: grid; grid-template-columns: 1fr 1fr;
+    align-items: center; padding: 0 56px;
+    overflow: hidden;
+  }
+  .hero-grid-bg {
+    position: absolute; inset: 0; pointer-events: none;
+  }
+  .hero-glow {
+    position: absolute; right: -120px; top: 50%;
+    transform: translateY(-50%);
+    width: 780px; height: 780px; border-radius: 50%;
+    background: radial-gradient(ellipse, rgba(0,161,224,0.1) 0%, rgba(3,45,96,0.05) 45%, transparent 70%);
+    filter: blur(60px); pointer-events: none;
+  }
+  .hero-left { position: relative; z-index: 2; }
+  .hero-eyebrow {
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 32px;
+    opacity: 0; animation: fadeUp 0.9s 0.3s forwards;
+  }
+  .hero-eyebrow-line { width: 40px; height: 1px; background: var(--accent); }
+  .hero-eyebrow span {
+    font-family: 'DM Mono', monospace; font-size: 0.68rem;
+    letter-spacing: 0.28em; text-transform: uppercase; color: var(--accent);
+  }
+  .hero-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3.8rem, 7vw, 6.8rem);
+    font-weight: 300; line-height: 1.0;
+    margin-bottom: 20px;
+    opacity: 0; animation: fadeUp 1s 0.5s forwards;
+  }
+  .hero-name em { font-style: italic; color: var(--white-dim); }
+  .hero-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(0.85rem, 1.2vw, 1rem);
+    font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 24px;
+    opacity: 0; animation: fadeUp 1s 0.7s forwards;
+  }
+  .hero-desc {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1rem, 1.4vw, 1.2rem);
+    font-weight: 300; line-height: 1.8;
+    color: var(--white-dim); max-width: 460px; margin-bottom: 48px;
+    opacity: 0; animation: fadeUp 1s 0.85s forwards;
+  }
+  .hero-stats-row {
+    display: flex; gap: 40px;
+    opacity: 0; animation: fadeUp 1s 1s forwards;
+  }
+  .h-stat .num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.8rem; font-weight: 300;
+    color: var(--accent); line-height: 1; display: block;
+  }
+  .h-stat .lbl {
+    font-family: 'DM Mono', monospace; font-size: 0.58rem;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--white-faint); margin-top: 4px; display: block;
+  }
 
-    .nav-links {
-      display: flex;
-      gap: 48px;
-      list-style: none;
-    }
-    .nav-links a {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.72rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--white-dim);
-      text-decoration: none;
-      position: relative;
-      transition: color 0.3s;
-    }
-    .nav-links a::after {
-      content: '';
-      position: absolute;
-      bottom: -4px; left: 0;
-      width: 0; height: 1px;
-      background: var(--accent);
-      transition: width 0.35s ease;
-    }
-    .nav-links a:hover { color: var(--white); }
-    .nav-links a:hover::after { width: 100%; }
+  /* Hero right — orbiting ring */
+  .hero-right {
+    position: relative; z-index: 2;
+    display: flex; align-items: center; justify-content: center;
+    height: 100vh;
+    opacity: 0; animation: fadeIn 1.4s 0.6s forwards;
+  }
+  .orbit-wrap { position: relative; width: 400px; height: 400px; }
+  .orbit-ring {
+    position: absolute; border-radius: 50%; border: 1px solid;
+  }
+  .orbit-1 { inset: 0; border-color: rgba(0,161,224,0.1); animation: spin 28s linear infinite; }
+  .orbit-2 { inset: 28px; border-color: rgba(0,161,224,0.07); animation: spin 20s linear infinite reverse; }
+  .orbit-3 { inset: 70px; border-color: rgba(201,168,76,0.1); animation: spin 35s linear infinite; }
+  .orbit-dot {
+    position: absolute; width: 6px; height: 6px;
+    border-radius: 50%; background: var(--accent);
+    top: -3px; left: 50%; transform: translateX(-50%);
+  }
+  .orbit-dot-gold { background: var(--gold); }
+  .orbit-center {
+    position: absolute; inset: 110px;
+    background: var(--black-soft); border-radius: 50%;
+    border: 1px solid rgba(0,161,224,0.15);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 8px;
+  }
+  .orbit-word {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem; font-weight: 300; font-style: italic;
+    color: var(--white);
+  }
+  .orbit-badge {
+    font-family: 'DM Mono', monospace; font-size: 0.5rem;
+    letter-spacing: 0.3em; text-transform: uppercase; color: var(--accent);
+  }
+  /* Floating stat cards */
+  .float-card {
+    position: absolute;
+    background: var(--black-soft); border: 1px solid var(--border);
+    padding: 16px 20px; min-width: 130px;
+  }
+  .float-card:nth-child(5) { bottom: 12%; left: -20px; animation: float 6s ease-in-out infinite; }
+  .float-card:nth-child(6) { top: 16%; right: -10px; animation: float 7s ease-in-out infinite 1s; }
+  .float-card:nth-child(7) { top: 52%; right: -44px; animation: float 5s ease-in-out infinite 0.5s; }
+  .fc-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem; font-weight: 300; color: var(--accent); line-height: 1;
+  }
+  .fc-lbl {
+    font-family: 'DM Mono', monospace; font-size: 0.58rem;
+    letter-spacing: 0.18em; text-transform: uppercase; color: var(--white-faint); margin-top: 4px;
+  }
 
-    .nav-cta {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.7rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--accent);
-      text-decoration: none;
-      border: 1px solid rgba(0,161,224,0.35);
-      padding: 10px 24px;
-      transition: background 0.3s, color 0.3s, border-color 0.3s;
-    }
-    .nav-cta:hover {
-      background: var(--accent);
-      color: var(--black);
-      border-color: var(--accent);
-    }
+  /* scroll hint */
+  .scroll-hint {
+    position: absolute; bottom: 36px; left: 56px;
+    display: flex; align-items: center; gap: 14px;
+    opacity: 0; animation: fadeIn 1s 1.8s forwards;
+  }
+  .scroll-hint span {
+    font-family: 'DM Mono', monospace; font-size: 0.62rem;
+    letter-spacing: 0.24em; text-transform: uppercase; color: var(--white-faint);
+  }
+  .scroll-line {
+    width: 1px; height: 52px;
+    background: linear-gradient(to bottom, var(--accent), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
 
-    /* ── MOBILE MENU ── */
-    .nav-toggle {
-      display: none;
-      flex-direction: column;
-      justify-content: space-around;
-      width: 30px;
-      height: 24px;
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 0;
-      z-index: 1001;
-    }
-    .hamburger-line {
-      width: 100%;
-      height: 2px;
-      background: var(--white);
-      transition: all 0.3s ease;
-      transform-origin: center;
-    }
-    .nav-toggle.active .hamburger-line:nth-child(1) {
-      transform: rotate(45deg) translate(6px, 6px);
-    }
-    .nav-toggle.active .hamburger-line:nth-child(2) {
-      opacity: 0;
-    }
-    .nav-toggle.active .hamburger-line:nth-child(3) {
-      transform: rotate(-45deg) translate(6px, -6px);
-    }
+  /* ── TICKER ── */
+  .ticker-wrap { overflow: hidden; background: var(--accent); padding: 28px 0; }
+  .ticker-track {
+    display: flex; width: max-content;
+    animation: ticker 22s linear infinite;
+  }
+  .ticker-item {
+    font-family: 'DM Mono', monospace; font-size: 0.65rem;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--black); padding: 0 48px; white-space: nowrap;
+  }
+  .tsep { color: rgba(0,0,0,0.3); }
 
-    .mobile-menu {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100vh;
-      background: rgba(8,8,8,0.98);
-      backdrop-filter: blur(10px);
-      z-index: 1000;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      transform: translateX(100%);
-      transition: transform 0.3s ease;
-      padding: 100px 20px;
-    }
-    .mobile-menu.active {
-      transform: translateX(0);
-    }
-    .mobile-menu-links {
-      display: flex;
-      flex-direction: column;
-      gap: 40px;
-      text-align: center;
-      list-style: none;
-    }
-    .mobile-menu-links a {
-      font-family: 'DM Mono', monospace;
-      font-size: 1.2rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--white-dim);
-      text-decoration: none;
-      transition: color 0.3s;
-      padding: 10px 0;
-    }
-    .mobile-menu-links a:hover,
-    .mobile-menu-links a.active {
-      color: var(--accent);
-    }
-    .mobile-menu-cta {
-      margin-top: 60px;
-      padding: 16px 32px;
-      font-family: 'DM Mono', monospace;
-      font-size: 0.9rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--accent);
-      text-decoration: none;
-      border: 1px solid rgba(0,161,224,0.35);
-      transition: background 0.3s, color 0.3s, border-color 0.3s;
-    }
-    .mobile-menu-cta:hover {
-      background: var(--accent);
-      color: var(--black);
-      border-color: var(--accent);
-    }
+  /* ── SECTION SHARED ── */
+  .section-inner { max-width: 1200px; margin: 0 auto; padding: 120px 56px; }
+  .sec-label {
+    display: flex; align-items: center; gap: 14px; margin-bottom: 20px;
+  }
+  .sec-label-line { width: 32px; height: 1px; background: var(--accent); }
+  .sec-label span {
+    font-family: 'DM Mono', monospace; font-size: 0.65rem;
+    letter-spacing: 0.28em; text-transform: uppercase; color: var(--accent);
+  }
+  .sec-heading {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.6rem, 5vw, 4.4rem);
+    font-weight: 300; line-height: 1.1; margin-bottom: 16px;
+  }
+  .sec-heading em { font-style: italic; color: var(--white-dim); }
 
-    /* Body scroll lock when menu is open */
-    body.menu-open {
-      overflow: hidden;
-    }
+  /* ── REVEAL ── */
+  .reveal {
+    opacity: 0; transform: translateY(32px);
+    transition: opacity 0.8s cubic-bezier(0.23,1,0.32,1), transform 0.8s cubic-bezier(0.23,1,0.32,1);
+  }
+  .reveal.vis { opacity: 1; transform: translateY(0); }
 
-    /* ── HERO ── */
-    #home {
-      position: relative;
-      min-height: 100vh;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      align-items: center;
-      padding: 0 56px;
-      margin-bottom: 40px;
-      overflow: hidden;
-    }
+  /* ── PROJECTS ── */
+  #projects { background: var(--black-mid); }
+  .projects-grid {
+    display: grid; grid-template-columns: repeat(3,1fr);
+    gap: 1px; margin-top: 60px; background: var(--border);
+  }
+  .proj-card {
+    background: var(--black-mid); padding: 40px 36px;
+    position: relative; overflow: hidden;
+    transition: background 0.4s; cursor: pointer;
+  }
+  .proj-card::before {
+    content: ''; position: absolute;
+    top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(to right, var(--accent), transparent);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.5s ease;
+  }
+  .proj-card:hover { background: var(--black-soft); }
+  .proj-card:hover::before { transform: scaleX(1); }
+  .proj-glow {
+    position: absolute; top: -60px; right: -60px;
+    width: 200px; height: 200px; border-radius: 50%;
+    background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+    opacity: 0; transition: opacity 0.5s; pointer-events: none;
+  }
+  .proj-card:hover .proj-glow { opacity: 1; }
+  .proj-card.featured {
+    grid-column: span 2;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start;
+  }
+  .proj-num {
+    font-family: 'DM Mono', monospace; font-size: 0.6rem;
+    letter-spacing: 0.22em; color: var(--white-faint); margin-bottom: 24px;
+  }
+  .proj-icon { font-size: 1.8rem; margin-bottom: 18px; display: block; }
+  .feat-badge {
+    display: inline-block; font-family: 'DM Mono', monospace;
+    font-size: 0.58rem; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--gold); border: 1px solid rgba(201,168,76,0.3);
+    padding: 4px 12px; margin-bottom: 16px;
+  }
+  .proj-title {
+    font-family: 'Syne', sans-serif; font-size: 1.05rem;
+    font-weight: 700; letter-spacing: 0.04em; color: var(--white); margin-bottom: 12px;
+  }
+  .proj-desc {
+    font-family: 'Cormorant Garamond', serif; font-size: 0.98rem;
+    font-weight: 300; line-height: 1.7; color: var(--white-dim); margin-bottom: 24px;
+  }
+  .proj-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
+  .tag {
+    font-family: 'DM Mono', monospace; font-size: 0.58rem;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--accent); border: 1px solid rgba(0,161,224,0.22); padding: 4px 10px;
+  }
 
-    .hero-bg-lines {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-    }
-    .hero-bg-lines line { stroke: rgba(255,255,255,0.03); stroke-width: 1; }
+  /* expand area */
+  .proj-expand {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.5s cubic-bezier(0.23,1,0.32,1);
+  }
+  .proj-expand.open { max-height: 500px; }
+  .expand-inner {
+    border-top: 1px solid var(--border); padding-top: 24px; margin-top: 8px;
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .exp-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.95rem; font-weight: 300; color: var(--white-dim); line-height: 1.6;
+  }
+  .exp-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: var(--accent); flex-shrink: 0; margin-top: 8px;
+  }
+  .proj-cta {
+    font-family: 'DM Mono', monospace; font-size: 0.62rem;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--white-faint); display: flex; align-items: center; gap: 8px;
+    margin-top: 24px; transition: color 0.3s; background: none; border: none;
+    cursor: none; padding: 0;
+  }
+  .proj-card:hover .proj-cta { color: var(--accent); }
+  .proj-cta svg { transition: transform 0.3s; }
+  .proj-card.open .proj-cta svg { transform: rotate(90deg); }
 
-    /* Cloud/orb glow */
-    .hero-glow {
-      position: absolute;
-      right: -120px; top: 50%;
-      transform: translateY(-50%);
-      width: 780px; height: 780px;
-      border-radius: 50%;
-      background: radial-gradient(ellipse at center, rgba(0,161,224,0.12) 0%, rgba(3,45,96,0.06) 45%, transparent 70%);
-      filter: blur(60px);
-      pointer-events: none;
-    }
-    .hero-glow2 {
-      position: absolute;
-      left: -200px; bottom: -100px;
-      width: 600px; height: 600px;
-      border-radius: 50%;
-      background: radial-gradient(ellipse at center, rgba(201,168,76,0.06) 0%, transparent 65%);
-      filter: blur(80px);
-      pointer-events: none;
-    }
+  /* featured viz */
+  .feat-viz {
+    background: var(--black-soft); border: 1px solid var(--border);
+    height: 240px; display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+  }
+  .feat-viz-label {
+    position: absolute; bottom: 14px; right: 16px;
+    font-family: 'DM Mono', monospace; font-size: 0.55rem;
+    letter-spacing: 0.18em; color: rgba(0,161,224,0.55); text-transform: uppercase;
+  }
 
-    .hero-left { position: relative; z-index: 2; }
+  /* proj metrics row */
+  .proj-metrics {
+    display: flex; gap: 28px;
+    padding: 20px 0; border-top: 1px solid var(--border);
+    margin-bottom: 0;
+  }
+  .pm { flex: 1; }
+  .pm .pv {
+    font-family: 'Cormorant Garamond', serif; font-size: 2rem;
+    font-weight: 300; color: var(--accent); line-height: 1; display: block;
+  }
+  .pm .pk {
+    font-family: 'DM Mono', monospace; font-size: 0.58rem;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--white-faint); margin-top: 4px; display: block;
+  }
 
-    .hero-eyebrow {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-bottom: 32px;
-      opacity: 0;
-      animation: fadeUp 0.9s 0.3s forwards;
-    }
-    .hero-eyebrow-line {
-      width: 40px; height: 1px;
-      background: var(--accent);
-    }
-    .hero-eyebrow span {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.68rem;
-      letter-spacing: 0.28em;
-      text-transform: uppercase;
-      color: var(--accent);
-    }
+  /* ── MAGIC MOMENT ── */
+  #magic { background: var(--black); }
+  .magic-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 80px; align-items: center; margin-top: 60px;
+  }
+  .magic-quote-block {
+    position: relative; padding: 48px;
+    border: 1px solid var(--border); background: var(--black-soft);
+  }
+  .magic-quote-block::before {
+    content: '"'; position: absolute; top: -20px; left: 32px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 7rem; font-weight: 300; color: var(--accent); opacity: 0.15; line-height: 1;
+  }
+  .magic-quote-block::after {
+    content: ''; position: absolute;
+    left: 0; top: 0; bottom: 0; width: 3px; background: var(--accent);
+  }
+  .magic-q {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.4rem, 2.5vw, 2rem);
+    font-weight: 300; font-style: italic; line-height: 1.4;
+    color: var(--white); margin-bottom: 24px;
+  }
+  .magic-attr {
+    font-family: 'DM Mono', monospace; font-size: 0.62rem;
+    letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent);
+  }
+  .magic-story {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.15rem; font-weight: 300; line-height: 1.85; color: var(--white-dim);
+  }
+  .magic-story p + p { margin-top: 20px; }
+  .magic-story strong { color: var(--white); font-weight: 400; }
 
-    .hero-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(3.8rem, 7vw, 6.8rem);
-      font-weight: 300;
-      line-height: 1.0;
-      letter-spacing: -0.01em;
-      margin-bottom: 24px;
-      opacity: 0;
-      animation: fadeUp 1s 0.5s forwards;
-    }
-    .hero-name em {
-      font-style: italic;
-      color: var(--white-dim);
-    }
+  /* ── TIMELINE ── */
+  #timeline { background: var(--black-mid); }
+  .tl-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 0 80px; margin-top: 60px;
+  }
+  .tl-col { position: relative; padding-left: 36px; }
+  .tl-col::before {
+    content: ''; position: absolute;
+    left: 0; top: 8px; bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--accent), transparent);
+  }
+  .tl-item {
+    position: relative; margin-bottom: 44px;
+    opacity: 0; transform: translateX(-20px);
+    transition: opacity 0.7s cubic-bezier(0.23,1,0.32,1), transform 0.7s cubic-bezier(0.23,1,0.32,1);
+  }
+  .tl-item.vis { opacity: 1; transform: translateX(0); }
+  .tl-dot {
+    position: absolute; left: -40px; top: 5px;
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 12px rgba(0,161,224,0.5);
+  }
+  .tl-date {
+    font-family: 'DM Mono', monospace; font-size: 0.6rem;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 6px;
+  }
+  .tl-title {
+    font-family: 'Syne', sans-serif; font-size: 0.9rem;
+    font-weight: 600; color: var(--white); margin-bottom: 6px;
+  }
+  .tl-body {
+    font-family: 'Cormorant Garamond', serif; font-size: 0.95rem;
+    font-weight: 300; color: var(--white-dim); line-height: 1.65;
+  }
 
-    .hero-title {
-      font-family: 'Syne', sans-serif;
-      font-size: clamp(0.95rem, 1.4vw, 1.15rem);
-      font-weight: 600;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 28px;
-      opacity: 0;
-      animation: fadeUp 1s 0.7s forwards;
-    }
+  /* ── SCORECARD ── */
+  #scorecard { background: var(--black); }
+  .score-grid {
+    display: flex; flex-direction: column; gap: 1px;
+    margin-top: 60px; background: var(--border);
+  }
+  .score-row {
+    background: var(--black); padding: 32px 40px;
+    display: grid; grid-template-columns: 200px 1fr 120px;
+    gap: 32px; align-items: center;
+    transition: background 0.3s;
+  }
+  .score-row:hover { background: var(--black-soft); }
+  .score-label {
+    font-family: 'Syne', sans-serif; font-size: 0.82rem;
+    font-weight: 700; letter-spacing: 0.04em; color: var(--white);
+  }
+  .score-bar-wrap {
+    position: relative; height: 2px; background: rgba(255,255,255,0.07);
+  }
+  .score-bar {
+    height: 100%; background: linear-gradient(to right, var(--accent), #12b8f5);
+    width: 0; transition: width 1.4s ease;
+    position: relative;
+  }
+  .score-bar::after {
+    content: ''; position: absolute; right: 0; top: 50%;
+    transform: translateY(-50%);
+    width: 6px; height: 6px; border-radius: 50%;
+    background: #12b8f5; box-shadow: 0 0 8px rgba(0,161,224,0.7);
+  }
+  .score-note {
+    font-family: 'Cormorant Garamond', serif; font-size: 0.88rem;
+    font-weight: 300; color: var(--white-dim); line-height: 1.5;
+    grid-column: 2 / -1; padding-top: 8px;
+    border-top: 1px solid var(--border);
+    display: none;
+  }
+  .score-row.expanded .score-note { display: block; }
+  .score-val {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.2rem; font-weight: 300; color: var(--accent);
+    text-align: right; line-height: 1;
+  }
+  .score-val span {
+    font-family: 'DM Mono', monospace; font-size: 0.58rem;
+    letter-spacing: 0.18em; color: var(--white-faint);
+    display: block; margin-top: 2px;
+  }
 
-    .hero-desc {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(1.05rem, 1.5vw, 1.25rem);
-      font-weight: 300;
-      line-height: 1.75;
-      color: var(--white-dim);
-      max-width: 480px;
-      margin-bottom: 52px;
-      opacity: 0;
-      animation: fadeUp 1s 0.85s forwards;
-    }
+  /* ── LEARNINGS ── */
+  #learnings { background: var(--black-mid); }
+  .learn-grid {
+    display: grid; grid-template-columns: repeat(3,1fr);
+    gap: 1px; margin-top: 60px; background: var(--border);
+  }
+  .learn-card {
+    background: var(--black-mid); padding: 40px 32px;
+    position: relative; overflow: hidden; transition: background 0.3s;
+  }
+  .learn-card:hover { background: var(--black-soft); }
+  .learn-card::before {
+    content: ''; position: absolute;
+    left: 0; top: 0; bottom: 0; width: 2px; background: var(--gold);
+  }
+  .learn-n {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 5rem; font-weight: 300; color: rgba(201,168,76,0.08);
+    position: absolute; top: 12px; right: 20px; line-height: 1;
+  }
+  .learn-title {
+    font-family: 'Syne', sans-serif; font-size: 0.85rem;
+    font-weight: 700; color: var(--gold); margin-bottom: 14px; line-height: 1.3;
+  }
+  .learn-body {
+    font-family: 'Cormorant Garamond', serif; font-size: 1rem;
+    font-weight: 300; line-height: 1.75; color: var(--white-dim);
+  }
 
-    .hero-actions {
-      display: flex;
-      gap: 20px;
-      align-items: center;
-      opacity: 0;
-      animation: fadeUp 1s 1s forwards;
-    }
-    .btn-primary {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.72rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      background: var(--accent);
-      color: var(--black);
-      padding: 16px 36px;
-      text-decoration: none;
-      font-weight: 400;
-      transition: background 0.3s, transform 0.3s;
-      display: inline-block;
-    }
-    .btn-primary:hover { background: #12b8f5; transform: translateY(-2px); }
-    .btn-secondary {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.72rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--white-dim);
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      transition: color 0.3s;
-    }
-    .btn-secondary svg { transition: transform 0.3s; }
-    .btn-secondary:hover { color: var(--white); }
-    .btn-secondary:hover svg { transform: translateX(4px); }
+  /* ── SKILLS ── */
+  #skills { background: var(--black); }
+  .skills-wrap {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 1px; margin-top: 60px; background: var(--border);
+  }
+  .sk-pill {
+    background: var(--black); padding: 28px 24px;
+    position: relative; overflow: hidden; transition: background 0.3s;
+  }
+  .sk-pill:hover { background: var(--black-soft); }
+  .sk-pill::before {
+    content: ''; position: absolute;
+    top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(to right, var(--accent), transparent);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.4s ease;
+  }
+  .sk-pill:hover::before { transform: scaleX(1); }
+  .sk-name {
+    font-family: 'Syne', sans-serif; font-size: 0.88rem;
+    font-weight: 700; color: var(--white); margin-bottom: 6px;
+  }
+  .sk-cat {
+    font-family: 'DM Mono', monospace; font-size: 0.6rem;
+    letter-spacing: 0.18em; text-transform: uppercase; color: var(--white-faint);
+  }
 
-    /* Right Hero — Salesforce Cloud Emblem */
-    .hero-right {
-      position: relative;
-      z-index: 2;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      opacity: 0;
-      animation: fadeIn 1.4s 0.6s forwards;
-    }
-    .sf-emblem-wrap {
-      position: relative;
-      width: 420px; height: 420px;
-    }
-    .sf-ring {
-      position: absolute;
-      border-radius: 50%;
-      border: 1px solid;
-    }
-    .sf-ring-1 {
-      inset: 0;
-      border-color: rgba(0,161,224,0.12);
-      animation: spin 28s linear infinite;
-    }
-    .sf-ring-2 {
-      inset: 30px;
-      border-color: rgba(0,161,224,0.08);
-      animation: spin 20s linear infinite reverse;
-    }
-    .sf-ring-3 {
-      inset: 70px;
-      border-color: rgba(201,168,76,0.1);
-      animation: spin 35s linear infinite;
-    }
-    .sf-ring-dot {
-      position: absolute;
-      width: 6px; height: 6px;
-      background: var(--accent);
-      border-radius: 50%;
-      top: -3px; left: 50%;
-      transform: translateX(-50%);
-    }
-    .sf-ring-dot-gold {
-      background: var(--gold);
-    }
-    .sf-inner {
-      position: absolute;
-      inset: 110px;
-      background: var(--black-soft);
-      border-radius: 50%;
-      border: 1px solid rgba(0,161,224,0.15);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-    }
-    .sf-cloud-icon {
-      width: 72px;
-      filter: drop-shadow(0 0 18px rgba(0,161,224,0.5));
-    }
-    .sf-certified-badge {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.55rem;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-top: 4px;
-    }
+  /* ── ONE WORD ── */
+  #oneword { background: var(--black-mid); }
+  .word-wrap {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
+    align-items: center; margin-top: 60px;
+  }
+  .big-word {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(5rem, 12vw, 10rem);
+    font-weight: 300; font-style: italic;
+    color: var(--white); line-height: 1;
+    opacity: 0.9; letter-spacing: -0.02em;
+  }
+  .big-word span { color: var(--accent); }
+  .word-body {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem; font-weight: 300; line-height: 1.9;
+    color: var(--white-dim);
+  }
+  .word-body p + p { margin-top: 20px; }
+  .word-body strong { color: var(--white); font-weight: 400; }
 
-    /* Floating stats */
-    .hero-stat-card {
-      position: absolute;
-      background: var(--black-soft);
-      border: 1px solid var(--border);
-      padding: 18px 24px;
-      min-width: 140px;
-    }
-    .hero-stat-card:nth-child(5) { bottom: 14%; left: -20px; animation: float 6s ease-in-out infinite; }
-    .hero-stat-card:nth-child(6) { top: 18%; right: -10px; animation: float 7s ease-in-out infinite 1s; }
-    .hero-stat-card:nth-child(7) { top: 54%; right: -40px; animation: float 5s ease-in-out infinite 0.5s; }
+  /* ── FOOTER ── */
+  footer {
+    background: var(--black); border-top: 1px solid var(--border);
+    padding: 36px 56px; display: flex;
+    align-items: center; justify-content: space-between;
+  }
+  .foot-copy {
+    font-family: 'DM Mono', monospace; font-size: 0.6rem;
+    letter-spacing: 0.18em; text-transform: uppercase; color: var(--white-faint);
+  }
+  .foot-links { display: flex; gap: 32px; }
+  .foot-links a {
+    font-family: 'DM Mono', monospace; font-size: 0.58rem;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--white-faint); text-decoration: none; transition: color 0.3s;
+  }
+  .foot-links a:hover { color: var(--accent); }
 
-    .stat-num {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 2.2rem;
-      font-weight: 300;
-      color: var(--accent);
-      line-height: 1;
-    }
-    .stat-label {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.6rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--white-faint);
-      margin-top: 4px;
-    }
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes float {
+    0%,100% { transform: translateY(0); }
+    50%     { transform: translateY(-14px); }
+  }
+  @keyframes scrollPulse {
+    0%,100% { opacity: 0.4; } 50% { opacity: 1; }
+  }
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
 
-    /* Scroll indicator */
-    .scroll-hint {
-      position: absolute;
-      bottom: 36px;
-      left: 56px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      opacity: 0;
-      animation: fadeIn 1s 1.6s forwards;
-    }
-    .scroll-hint span {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.62rem;
-      letter-spacing: 0.24em;
-      text-transform: uppercase;
-      color: var(--white-faint);
-    }
-    .scroll-line {
-      width: 1px; height: 52px;
-      background: linear-gradient(to bottom, var(--accent), transparent);
-      animation: scrollPulse 2s ease-in-out infinite;
-    }
-
-    /* ── SECTION SHARED ── */
-    section { position: relative; }
-    .section-inner {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 120px 56px;
-    }
-    .section-label {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-bottom: 20px;
-    }
-    .section-label-line { width: 32px; height: 1px; background: var(--accent); }
-    .section-label span {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.65rem;
-      letter-spacing: 0.28em;
-      text-transform: uppercase;
-      color: var(--accent);
-    }
-    .section-heading {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2.6rem, 5vw, 4.4rem);
-      font-weight: 300;
-      line-height: 1.1;
-      margin-bottom: 16px;
-    }
-    .section-heading em { font-style: italic; color: var(--white-dim); }
-
-    /* ── ABOUT ── */
-    #about { background: var(--black-mid); }
-    .about-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 80px;
-      align-items: start;
-      margin-top: 60px;
-    }
-    .about-body {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.18rem;
-      font-weight: 300;
-      line-height: 1.85;
-      color: var(--white-dim);
-    }
-    .about-body p + p { margin-top: 22px; }
-    .about-body strong { color: var(--white); font-weight: 400; }
-
-    .certifications-title {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.65rem;
-      letter-spacing: 0.24em;
-      text-transform: uppercase;
-      color: var(--white-faint);
-      margin-bottom: 24px;
-    }
-    .cert-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
-    .cert-item {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      padding: 16px 20px;
-      border: 1px solid var(--border);
-      background: var(--black-soft);
-      transition: border-color 0.3s, background 0.3s;
-      position: relative;
-      overflow: hidden;
-    }
-    .cert-item::before {
-      content: '';
-      position: absolute;
-      left: 0; top: 0; bottom: 0;
-      width: 2px;
-      background: var(--accent);
-    }
-    .cert-item:hover { border-color: rgba(0,161,224,0.3); background: rgba(0,161,224,0.04); }
-    .cert-icon { font-size: 1.2rem; }
-    .cert-name {
-      font-family: 'Syne', sans-serif;
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: var(--white);
-      letter-spacing: 0.04em;
-    }
-    .cert-year {
-      margin-left: auto;
-      font-family: 'DM Mono', monospace;
-      font-size: 0.62rem;
-      color: var(--white-faint);
-    }
-
-    /* Skills bar */
-    .skills-section { margin-top: 52px; }
-    .skill-row { margin-bottom: 20px; }
-    .skill-meta {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 8px;
-    }
-    .skill-name {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.68rem;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--white-dim);
-    }
-    .skill-pct {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.62rem;
-      color: var(--accent);
-    }
-    .skill-track {
-      height: 2px;
-      background: rgba(255,255,255,0.07);
-      position: relative;
-    }
-    .skill-fill {
-      height: 100%;
-      background: linear-gradient(to right, var(--accent), #12b8f5);
-      width: 0;
-      transition: width 1.4s ease;
-      position: relative;
-    }
-    .skill-fill::after {
-      content: '';
-      position: absolute;
-      right: 0; top: 50%;
-      transform: translateY(-50%);
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: #12b8f5;
-      box-shadow: 0 0 8px rgba(0,161,224,0.7);
-    }
-
-    /* ── PROJECTS ── */
-    #projects { background: var(--black); }
-    .projects-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1px;
-      margin-top: 60px;
-      background: var(--border);
-    }
-    .project-card {
-      background: var(--black);
-      padding: 40px 36px;
-      position: relative;
-      overflow: hidden;
-      transition: background 0.4s;
-      cursor: pointer;
-    }
-    .project-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-      background: linear-gradient(to right, var(--accent), transparent);
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform 0.5s ease;
-    }
-    .project-card:hover { background: var(--black-soft); }
-    .project-card:hover::before { transform: scaleX(1); }
-    .project-card-glow {
-      position: absolute;
-      top: -60px; right: -60px;
-      width: 200px; height: 200px;
-      border-radius: 50%;
-      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
-      opacity: 0;
-      transition: opacity 0.5s;
-      pointer-events: none;
-    }
-    .project-card:hover .project-card-glow { opacity: 1; }
-
-    .project-num {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.6rem;
-      letter-spacing: 0.22em;
-      color: var(--white-faint);
-      margin-bottom: 24px;
-    }
-    .project-icon {
-      font-size: 1.8rem;
-      margin-bottom: 18px;
-      display: block;
-    }
-    .project-title {
-      font-family: 'Syne', sans-serif;
-      font-size: 1.05rem;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      color: var(--white);
-      margin-bottom: 12px;
-    }
-    .project-desc {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 0.98rem;
-      font-weight: 300;
-      line-height: 1.7;
-      color: var(--white-dim);
-      margin-bottom: 28px;
-    }
-    .project-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 28px;
-    }
-    .tag {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.58rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--accent);
-      border: 1px solid rgba(0,161,224,0.22);
-      padding: 4px 10px;
-    }
-    .project-link {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.62rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--white-faint);
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      transition: color 0.3s;
-    }
-    .project-link:hover { color: var(--accent); }
-
-    /* Featured project — spans 2 cols */
-    .project-card.featured {
-      grid-column: span 2;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 40px;
-      align-items: center;
-    }
-    .featured-badge {
-      display: inline-block;
-      font-family: 'DM Mono', monospace;
-      font-size: 0.58rem;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--gold);
-      border: 1px solid rgba(201,168,76,0.3);
-      padding: 4px 12px;
-      margin-bottom: 16px;
-    }
-
-    /* ── CONTACT ── */
-    #contact { background: var(--black-mid); }
-    .contact-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 80px;
-      align-items: start;
-      margin-top: 60px;
-    }
-    .contact-info { }
-    .contact-tagline {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.25rem;
-      font-weight: 300;
-      line-height: 1.8;
-      color: var(--white-dim);
-      margin-bottom: 52px;
-    }
-    .contact-links { display: flex; flex-direction: column; gap: 20px; }
-    .contact-link-item {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      padding-bottom: 20px;
-      border-bottom: 1px solid var(--border);
-      text-decoration: none;
-      transition: border-color 0.3s;
-    }
-    .contact-link-item:hover { border-color: rgba(0,161,224,0.3); }
-    .contact-link-icon {
-      width: 42px; height: 42px;
-      border: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1rem;
-      flex-shrink: 0;
-      transition: border-color 0.3s, background 0.3s;
-    }
-    .contact-link-item:hover .contact-link-icon {
-      border-color: var(--accent);
-      background: rgba(0,161,224,0.07);
-    }
-    .contact-link-label {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.62rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--white-faint);
-      margin-bottom: 2px;
-    }
-    .contact-link-value {
-      font-family: 'Syne', sans-serif;
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: var(--white);
-    }
-
-    /* Contact form */
-    .contact-form { display: flex; flex-direction: column; gap: 20px; }
-    .form-group { display: flex; flex-direction: column; gap: 8px; }
-    .form-label {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.6rem;
-      letter-spacing: 0.24em;
-      text-transform: uppercase;
-      color: var(--white-faint);
-    }
-    .form-input, .form-textarea {
-      background: var(--black-soft);
-      border: 1px solid var(--border);
-      color: var(--white);
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1rem;
-      font-weight: 300;
-      padding: 14px 18px;
-      outline: none;
-      transition: border-color 0.3s;
-      resize: none;
-    }
-    .form-input:focus, .form-textarea:focus { border-color: rgba(0,161,224,0.5); }
-    .form-input::placeholder, .form-textarea::placeholder { color: var(--white-faint); }
-    .form-textarea { height: 120px; }
-    .form-submit {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.72rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      background: var(--accent);
-      color: var(--black);
-      border: none;
-      padding: 16px;
-      cursor: none;
-      font-weight: 400;
-      transition: background 0.3s, transform 0.3s;
-    }
-    .form-submit:hover { background: #12b8f5; transform: translateY(-2px); }
-
-    /* ── FOOTER ── */
-    footer {
-      background: var(--black);
-      border-top: 1px solid var(--border);
-      padding: 36px 56px;
-      margin-top: 40px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .footer-copy {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.6rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--white-faint);
-    }
-    .footer-links { display: flex; gap: 32px; }
-    .footer-links a {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.58rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--white-faint);
-      text-decoration: none;
-      transition: color 0.3s;
-    }
-    .footer-links a:hover { color: var(--accent); }
-
-    /* ── TICKER ── */
-    .ticker-wrap {
-      overflow: hidden;
-      background: var(--accent);
-      padding: 32px 0;
-    }
-    .ticker-track {
-      display: flex;
-      width: max-content;
-      animation: ticker 22s linear infinite;
-    }
-    .ticker-item {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.65rem;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--black);
-      padding: 0 48px;
-      white-space: nowrap;
-    }
-    .ticker-sep { color: rgba(0,0,0,0.3); }
-
-    /* ── ANIMATIONS ── */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(28px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to   { opacity: 1; }
-    }
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50%       { transform: translateY(-14px); }
-    }
-    @keyframes scrollPulse {
-      0%, 100% { opacity: 0.4; }
-      50%       { opacity: 1; }
-    }
-    @keyframes ticker {
-      from { transform: translateX(0); }
-      to   { transform: translateX(-50%); }
-    }
-
-    /* ── RESPONSIVE ── */
-    @media (max-width: 1200px) {
-      #home { padding: 0 40px; }
-      .section-inner { padding: 100px 40px; }
-      footer { padding: 36px 40px; }
-    }
-
-    @media (max-width: 900px) {
-      nav { padding: 22px 28px; }
-      .nav-links { gap: 28px; }
-      #home { grid-template-columns: 1fr; padding: 120px 28px 60px; }
-      .hero-right { display: none; }
-      .hero-name { font-size: 2.8rem; }
-      .hero-title { font-size: 1.4rem; }
-      .hero-desc { font-size: 1rem; }
-      .about-grid, .contact-grid, .project-card.featured { grid-template-columns: 1fr; }
-      .projects-grid { grid-template-columns: 1fr; }
-      .project-card.featured { grid-column: span 1; }
-      .section-inner { padding: 80px 28px; }
-      .section-heading { font-size: 2.2rem; }
-      footer { flex-direction: column; gap: 20px; text-align: center; }
-    }
-
-    @media (max-width: 768px) {
-      nav { padding: 18px 20px; }
-      .nav-links { display: none; }
-      .nav-cta { display: none; }
-      .nav-toggle { display: flex; }
-      #home { padding: 100px 20px 40px; }
-      .hero-name { font-size: 2.4rem; line-height: 1.1; }
-      .hero-title { font-size: 1.2rem; }
-      .hero-desc { font-size: 0.95rem; }
-      .hero-actions { flex-direction: column; gap: 16px; align-items: flex-start; }
-      .btn-primary, .btn-secondary { width: 100%; justify-content: center; }
-      .section-inner { padding: 60px 20px; }
-      .section-heading { font-size: 2rem; line-height: 1.2; }
-      .about-grid { gap: 40px; }
-      .projects-grid { gap: 30px; }
-      .project-card { padding: 24px; }
-      .contact-grid { gap: 40px; }
-      .contact-form { gap: 20px; }
-      .form-group { gap: 8px; }
-      .form-submit { width: 100%; }
-      footer { padding: 32px 20px; }
-      .footer-links { gap: 24px; }
-    }
-
-    @media (max-width: 480px) {
-      nav { padding: 16px 16px; }
-      .nav-logo { font-size: 1.1rem; }
-      .nav-links { display: none; }
-      .nav-cta { display: none; }
-      .nav-toggle { display: flex; }
-      #home { padding: 80px 16px 30px; }
-      .hero-name { font-size: 2rem; }
-      .hero-title { font-size: 1.1rem; }
-      .hero-desc { font-size: 0.9rem; line-height: 1.5; }
-      .hero-actions { gap: 12px; }
-      .section-inner { padding: 50px 16px; }
-      .section-heading { font-size: 1.8rem; }
-      .about-grid { gap: 30px; }
-      .skill-bar { height: 6px; }
-      .projects-grid { gap: 24px; }
-      .project-card { padding: 20px; }
-      .project-title { font-size: 1.1rem; }
-      .project-desc { font-size: 0.9rem; }
-      .contact-grid { gap: 30px; }
-      .contact-form { gap: 16px; }
-      .contact-links { gap: 16px; }
-      .contact-link { padding: 12px; }
-      .contact-link-icon { width: 20px; height: 20px; }
-      footer { padding: 28px 16px; }
-      .footer-links { gap: 20px; }
-      .footer-links a { font-size: 0.75rem; }
-      .ticker-item { font-size: 0.55rem; padding: 0 32px; }
-    }
-
-    @media (max-width: 360px) {
-      #home { padding: 60px 12px 20px; }
-      .hero-name { font-size: 1.8rem; }
-      .hero-title { font-size: 1rem; }
-      .hero-desc { font-size: 0.85rem; }
-      .section-inner { padding: 40px 12px; }
-      .section-heading { font-size: 1.6rem; }
-      .about-grid { gap: 24px; }
-      .projects-grid { gap: 20px; }
-      .project-card { padding: 16px; }
-      .contact-grid { gap: 24px; }
-      .contact-form { gap: 12px; }
-      .contact-links { gap: 12px; }
-      .contact-link { padding: 10px; min-height: 44px; }
-      .contact-link-icon { width: 18px; height: 18px; }
-      footer { padding: 24px 12px; }
-      .ticker-item { font-size: 0.5rem; padding: 0 24px; }
-    }
-
-    /* Touch-friendly improvements */
-    @media (hover: none) and (pointer: coarse) {
-      .btn-primary, .btn-secondary, .project-link, .contact-link, .form-submit {
-        min-height: 44px;
-        padding: 12px 16px;
-      }
-      .nav-links a, .footer-links a {
-        min-height: 44px;
-        padding: 8px 12px;
-        display: flex;
-        align-items: center;
-      }
-    }
-  </style>
+  /* ── RESPONSIVE ── */
+  @media (min-width: 1400px) {
+    .section-inner { max-width: 1400px; padding: 140px 80px; }
+    nav { padding: 32px 80px; }
+    #hero { padding: 0 80px; }
+    .hero-right { height: 120vh; }
+    .projects-grid { gap: 2px; }
+    .proj-card { padding: 48px 40px; }
+  }
+  @media (max-width: 1100px) {
+    .projects-grid, .learn-grid { grid-template-columns: 1fr; }
+    .proj-card.featured { grid-column: span 1; grid-template-columns: 1fr; }
+    .tl-grid { grid-template-columns: 1fr; }
+    .score-row { grid-template-columns: 160px 1fr 80px; gap: 20px; }
+  }
+  @media (max-width: 900px) {
+    #hero { grid-template-columns: 1fr; padding: 120px 28px 60px; }
+    .hero-right { display: none; }
+    .magic-grid, .word-wrap { grid-template-columns: 1fr; }
+    .section-inner { padding: 80px 28px; }
+    nav { padding: 22px 28px; }
+  }
+  @media (max-width: 768px) {
+    nav { padding: 18px 20px; }
+    .section-inner { padding: 60px 20px; }
+    .score-row { grid-template-columns: 1fr 80px; }
+    .score-label { grid-column: 1 / -1; }
+    footer { flex-direction: column; gap: 20px; text-align: center; padding: 32px 20px; }
+  }
+</style>
 </head>
 <body>
 
-  <div id="cursor"></div>
-  <div id="cursor-ring"></div>
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
 
-  <!-- NAV -->
-  <nav>
-    <a class="nav-logo" href="index.html">MM<span>·</span>Portfolio</a>
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="projects.html">Projects</a></li>
-      <li><a href="contact.html">Contact</a></li>
-    </ul>
-    <a class="nav-cta" href="contact.html">Hire Me</a>
-    <button class="nav-toggle" aria-label="Toggle navigation menu">
-      <span class="hamburger-line"></span>
-      <span class="hamburger-line"></span>
-      <span class="hamburger-line"></span>
-    </button>
-  </nav>
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="index.html">MM<span>·</span>Portfolio</a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="projects.html">Projects</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <a class="nav-cta" href="contact.html">Hire Me</a>
+</nav>
 
-  <!-- MOBILE MENU -->
-  <div class="mobile-menu">
-    <ul class="mobile-menu-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="projects.html">Projects</a></li>
-      <li><a href="contact.html">Contact</a></li>
-    </ul>
-    <a class="mobile-menu-cta" href="contact.html">Hire Me</a>
-  </div>
+<!-- HERO -->
+<section id="hero">
+  <svg class="hero-grid-bg" aria-hidden="true">
+    <defs>
+      <pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse">
+        <path d="M 80 0 L 0 0 0 80" fill="none" stroke="rgba(255,255,255,0.025)" stroke-width="0.5"/>
+      </pattern>
+    </defs>
+    <rect width="100%" height="100%" fill="url(#grid)" />
+  </svg>
+  <div class="hero-glow"></div>
 
-  <!-- HERO -->
-  <section id="home">
-    <svg class="hero-bg-lines" aria-hidden="true">
-      <defs>
-        <pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse">
-          <path d="M 80 0 L 0 0 0 80" fill="none" stroke="rgba(255,255,255,0.025)" stroke-width="0.5"/>
-        </pattern>
-      </defs>
-      <rect width="100%" height="100%" fill="url(#grid)" />
-    </svg>
-    <div class="hero-glow"></div>
-    <div class="hero-glow2"></div>
-
-    <div class="hero-left">
-      <div class="hero-eyebrow">
-        <div class="hero-eyebrow-line"></div>
-        <span>Salesforce &amp; Full-Stack Developer · Q1 2026</span>
-      </div>
-      <h1 class="hero-name">
-        Monty<br/><em>Mhango</em>
-      </h1>
-      <p class="hero-title">CRM · Automation · Full-Stack Development</p>
-      <p class="hero-desc">
-        Three months in at Umuzi. Two live projects shipped. Four systems integrated. One quarter of building real things that are still running in production today.
-      </p>
-      <div class="hero-actions">
-        <a class="btn-primary" href="projects.html">View Projects</a>
-        <a class="btn-secondary" href="about.html">
-          About Me
-          <svg width="18" height="10" viewBox="0 0 18 10" fill="none">
-            <path d="M1 5h16M12 1l5 4-5 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </a>
-      </div>
+  <div class="hero-left">
+    <div class="hero-eyebrow">
+      <div class="hero-eyebrow-line"></div>
+      <span>Q1 2026 · Deep Dive</span>
     </div>
-
-    <div class="hero-right">
-      <div class="sf-emblem-wrap">
-        <div class="sf-ring sf-ring-1">
-          <div class="sf-ring-dot"></div>
-        </div>
-        <div class="sf-ring sf-ring-2">
-          <div class="sf-ring-dot sf-ring-dot-gold"></div>
-        </div>
-        <div class="sf-ring sf-ring-3">
-          <div class="sf-ring-dot" style="background:#ffffff22;"></div>
-        </div>
-        <div class="sf-inner">
-          <!-- Salesforce Cloud SVG -->
-          <svg class="sf-cloud-icon" viewBox="0 0 100 68" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M41.5 12.5C45.2 5 52 0 60.5 0C72 0 81 9 81 20.5C81 21.2 81 22 80.9 22.7C83.2 21.7 85.8 21 88.5 21C94.8 21 100 26.2 100 32.5C100 38.8 94.8 44 88.5 44H20C9 44 0 35 0 24C0 13 9 4 20 4C26.8 4 32.8 7.4 36.5 12.7" fill="#00A1E0"/>
-            <path d="M30 44L28 68H72L70 44" fill="#00A1E0" opacity="0.4"/>
-            <rect x="35" y="55" width="30" height="4" rx="2" fill="#00A1E0" opacity="0.6"/>
-          </svg>
-          <p class="sf-certified-badge">Q1 2026</p>
-        </div>
-        <!-- Floating stat cards inside hero-right -->
-        <div class="hero-stat-card">
-          <div class="stat-num">87</div>
-          <div class="stat-label">Automation Credits</div>
-        </div>
-        <div class="hero-stat-card">
-          <div class="stat-num">15+</div>
-          <div class="stat-label">Staff Trained</div>
-        </div>
-        <div class="hero-stat-card">
-          <div class="stat-num">3M+</div>
-          <div class="stat-label">Potential Reach</div>
-        </div>
+    <h1 class="hero-name">
+      Monty<br/><em>Mhango</em><br/>in Q1
+    </h1>
+    <p class="hero-title">The full story — Jan through Mar 2026</p>
+    <p class="hero-desc">
+      Two live projects. Four systems integrated. Fifteen staff trained. One quarter that built the foundations for everything that comes next.
+    </p>
+    <div class="hero-stats-row">
+      <div class="h-stat">
+        <span class="num" data-target="87">0</span>
+        <span class="lbl">Automation Credits</span>
       </div>
-    </div>
-
-    <div class="scroll-hint">
-      <div class="scroll-line"></div>
-      <span>Scroll</span>
-    </div>
-  </section>
-
-  <!-- TICKER -->
-  <div class="ticker-wrap" aria-hidden="true">
-    <div class="ticker-track">
-      <span class="ticker-item">Salesforce CRM <span class="ticker-sep">✦</span></span>
-      <span class="ticker-item">Make.com Automation <span class="ticker-sep">✦</span></span>
-      <span class="ticker-item">Webflow Integration <span class="ticker-sep">✦</span></span>
-      <span class="ticker-item">React.js <span class="ticker-sep">✦</span></span>
-      <span class="ticker-item">Symfony PHP <span class="ticker-sep">✦</span></span>
-      <span class="ticker-item">Permission Sets <span class="ticker-sep">✦</span></span>
-      <span class="ticker-item">Trail Tracker <span class="ticker-sep">✦</span></span>
-      <span class="ticker-item">FIFO Tax Logic <span class="ticker-sep">✦</span></span>
-      <span class="ticker-item">Salesforce CRM <span class="ticker-sep">✦</span></span>
-      <span class="ticker-item">Make.com Automation <span class="ticker-sep">✦</span></span>
-      <span class="ticker-item">Webflow Integration <span class="ticker-sep">✦</span></span>
-      <span class="ticker-item">React.js <span class="ticker-sep">✦</span></span>
-      <span class="ticker-item">Symfony PHP <span class="ticker-sep">✦</span></span>
-      <span class="ticker-item">Permission Sets <span class="ticker-sep">✦</span></span>
-      <span class="ticker-item">Trail Tracker <span class="ticker-sep">✦</span></span>
-      <span class="ticker-item">FIFO Tax Logic <span class="ticker-sep">✦</span></span>
+      <div class="h-stat">
+        <span class="num" data-target="15">0</span>
+        <span class="lbl">Staff Trained</span>
+      </div>
+      <div class="h-stat">
+        <span class="num" data-target="9">0</span>
+        <span class="lbl">Timeline Milestones</span>
+      </div>
     </div>
   </div>
 
-  <!-- FOOTER -->
-  <footer>
-    <span class="footer-copy">© 2026 Monty Mhango — All rights reserved</span>
-    <div class="footer-links">
-      <a href="index.html">Home</a>
-      <a href="about.html">About</a>
-      <a href="projects.html">Projects</a>
-      <a href="contact.html">Contact</a>
+  <div class="hero-right">
+    <div class="orbit-wrap">
+      <div class="orbit-ring orbit-1"><div class="orbit-dot"></div></div>
+      <div class="orbit-ring orbit-2"><div class="orbit-dot orbit-dot-gold"></div></div>
+      <div class="orbit-ring orbit-3"><div class="orbit-dot" style="background:rgba(255,255,255,0.2)"></div></div>
+      <div class="orbit-center">
+        <div class="orbit-word">Momentum</div>
+        <div class="orbit-badge">Q1 2026</div>
+      </div>
+      <div class="float-card">
+        <div class="fc-num">87</div>
+        <div class="fc-lbl">Make Credits</div>
+      </div>
+      <div class="float-card">
+        <div class="fc-num">3M+</div>
+        <div class="fc-lbl">Potential reach</div>
+      </div>
+      <div class="float-card">
+        <div class="fc-num">7.6</div>
+        <div class="fc-lbl">Overall Score</div>
+      </div>
     </div>
-    <span class="footer-copy" style="color:rgba(0,161,224,0.4);">Q1 2026 · Umuzi · Johannesburg</span>
-  </footer>
+  </div>
 
-  <script>
-    // ── MOBILE MENU TOGGLE ──
-    const navToggle = document.querySelector('.nav-toggle');
-    const mobileMenu = document.querySelector('.mobile-menu');
-    const body = document.body;
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
 
-    function toggleMobileMenu() {
-      navToggle.classList.toggle('active');
-      mobileMenu.classList.toggle('active');
-      body.classList.toggle('menu-open');
+<!-- TICKER -->
+<div class="ticker-wrap" aria-hidden="true">
+  <div class="ticker-track">
+    <span class="ticker-item">Salesforce CRM <span class="tsep">✦</span></span>
+    <span class="ticker-item">Make.com Automation <span class="tsep">✦</span></span>
+    <span class="ticker-item">Webflow Integration <span class="tsep">✦</span></span>
+    <span class="ticker-item">React.js Frontend <span class="tsep">✦</span></span>
+    <span class="ticker-item">Symfony PHP <span class="tsep">✦</span></span>
+    <span class="ticker-item">FIFO Tax Logic <span class="tsep">✦</span></span>
+    <span class="ticker-item">Trail Tracker <span class="tsep">✦</span></span>
+    <span class="ticker-item">Permission Sets <span class="tsep">✦</span></span>
+    <span class="ticker-item">Salesforce CRM <span class="tsep">✦</span></span>
+    <span class="ticker-item">Make.com Automation <span class="tsep">✦</span></span>
+    <span class="ticker-item">Webflow Integration <span class="tsep">✦</span></span>
+    <span class="ticker-item">React.js Frontend <span class="tsep">✦</span></span>
+    <span class="ticker-item">Symfony PHP <span class="tsep">✦</span></span>
+    <span class="ticker-item">FIFO Tax Logic <span class="tsep">✦</span></span>
+    <span class="ticker-item">Trail Tracker <span class="tsep">✦</span></span>
+    <span class="ticker-item">Permission Sets <span class="tsep">✦</span></span>
+  </div>
+</div>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-inner reveal">
+    <div class="sec-label"><div class="sec-label-line"></div><span>01 — Work</span></div>
+    <h2 class="sec-heading">What I <em>shipped</em></h2>
+
+    <div class="projects-grid">
+
+      <!-- FEATURED: Salesforce -->
+      <div class="proj-card featured" onclick="toggleProj(this)">
+        <div class="proj-glow"></div>
+        <div>
+          <p class="proj-num">01</p>
+          <span class="feat-badge">★ Live in Production</span>
+          <p class="proj-icon">☁️</p>
+          <h3 class="proj-title">Salesforce CRM Rollout — Umuzi</h3>
+          <p class="proj-desc">End-to-end CRM implementation for Umuzi's Business Development team. Field audits, a live automation pipeline, permission architecture, and a full staff training programme — all shipped in Q1.</p>
+          <div class="proj-metrics">
+            <div class="pm"><span class="pv">19→1</span><span class="pk">Fields Resolved</span></div>
+            <div class="pm"><span class="pv">87</span><span class="pk">Make Credits Used</span></div>
+            <div class="pm"><span class="pv">3</span><span class="pk">BD Personas Built</span></div>
+          </div>
+          <div class="proj-expand">
+            <div class="expand-inner">
+              <div class="exp-item"><div class="exp-dot"></div>Full field audit across the Account object — narrowed 19 suspected gaps to exactly 1 (bank_branch_code)</div>
+              <div class="exp-item"><div class="exp-dot"></div>Built a live Webflow → Salesforce automation via Make.com processing all form submissions with zero manual entry</div>
+              <div class="exp-item"><div class="exp-dot"></div>Validated every picklist value across Accounts, Leads & Opportunities against Arcsen's reference data</div>
+              <div class="exp-item"><div class="exp-dot"></div>Configured Permission Sets & Groups for 3 BD personas; verified full UAT vs Production parity</div>
+              <div class="exp-item"><div class="exp-dot"></div>Set up Trail Tracker in Production with daily badge syncs + created a 2-week Trailhead onboarding plan</div>
+              <div class="exp-item"><div class="exp-dot"></div>Ran office hours sessions and tracked Trailhead completion for 15+ Umuzi staff through March</div>
+            </div>
+          </div>
+          <button class="proj-cta">
+            <span>Expand details</span>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M7 2v10M3 8l4 4 4-4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+        <div>
+          <div class="feat-viz">
+            <svg viewBox="0 0 200 140" width="170" style="opacity:0.85">
+              <rect x="8"  y="95" width="24" height="36" rx="1" fill="#00A1E0" opacity="0.4"/>
+              <rect x="42" y="75" width="24" height="56" rx="1" fill="#00A1E0" opacity="0.6"/>
+              <rect x="76" y="50" width="24" height="81" rx="1" fill="#00A1E0" opacity="0.8"/>
+              <rect x="110" y="32" width="24" height="99" rx="1" fill="#00A1E0"/>
+              <rect x="144" y="15" width="24" height="116" rx="1" fill="#12b8f5"/>
+              <polyline points="20,95 54,75 88,50 122,32 156,15"
+                fill="none" stroke="#C9A84C" stroke-width="1.5" stroke-dasharray="4 3"/>
+              <circle cx="20" cy="95" r="3" fill="#C9A84C"/>
+              <circle cx="54" cy="75" r="3" fill="#C9A84C"/>
+              <circle cx="88" cy="50" r="3" fill="#C9A84C"/>
+              <circle cx="122" cy="32" r="3" fill="#C9A84C"/>
+              <circle cx="156" cy="15" r="3" fill="#C9A84C"/>
+            </svg>
+            <div class="feat-viz-label">87 automation credits consumed · still running</div>
+          </div>
+          <div class="proj-tags" style="margin-top:20px">
+            <span class="tag">Salesforce</span>
+            <span class="tag">Make.com</span>
+            <span class="tag">Webflow</span>
+            <span class="tag">Trail Tracker</span>
+            <span class="tag">Permission Sets</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- TaxTim -->
+      <div class="proj-card" onclick="toggleProj(this)">
+        <div class="proj-glow"></div>
+        <p class="proj-num">02</p>
+        <p class="proj-icon">🧮</p>
+        <h3 class="proj-title">TaxTim Crypto Tax Calculator</h3>
+        <p class="proj-desc">Led development as Tech Lead — a FIFO crypto calculator to help South Africans declare gains to SARS. Best submission goes live on TaxTim for 3M+ users.</p>
+        <div class="proj-metrics">
+          <div class="pm"><span class="pv" style="color:var(--gold)">3M+</span><span class="pk">Potential Users</span></div>
+          <div class="pm"><span class="pv" style="color:var(--gold)">3</span><span class="pk">Tx Types</span></div>
+        </div>
+        <div class="proj-expand">
+          <div class="expand-inner">
+            <div class="exp-item"><div class="exp-dot" style="background:var(--gold)"></div>Multi-balance FIFO engine — handles BUY, SELL & TRADE per SARS calculation rules</div>
+            <div class="exp-item"><div class="exp-dot" style="background:var(--gold)"></div>Capital Gain/Loss and Base Cost reported per coin, per SA tax year (March–February cycle)</div>
+            <div class="exp-item"><div class="exp-dot" style="background:var(--gold)"></div>React frontend with expandable transaction rows and a single "Expand All" calculations view</div>
+            <div class="exp-item"><div class="exp-dot" style="background:var(--gold)"></div>Symfony PHP OOP backend — paste tab-separated Excel data in, receive your full tax breakdown</div>
+            <div class="exp-item"><div class="exp-dot" style="background:var(--gold)"></div>Handles stablecoins (USDT) and any arbitrary crypto ticker without hard-coding</div>
+          </div>
+        </div>
+        <div class="proj-tags">
+          <span class="tag" style="color:var(--gold);border-color:rgba(201,168,76,0.22)">React.js</span>
+          <span class="tag" style="color:var(--gold);border-color:rgba(201,168,76,0.22)">Symfony PHP</span>
+          <span class="tag" style="color:var(--gold);border-color:rgba(201,168,76,0.22)">Tech Lead</span>
+        </div>
+        <button class="proj-cta"><span>Expand details</span>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M7 2v10M3 8l4 4 4-4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Support & Testing -->
+      <div class="proj-card" onclick="toggleProj(this)">
+        <div class="proj-glow"></div>
+        <p class="proj-num">03</p>
+        <p class="proj-icon">🧪</p>
+        <h3 class="proj-title">Level 0 Support & UAT Testing</h3>
+        <p class="proj-desc">Rotated on Hesk support tickets and co-led UAT testing of the Learner Media Uploads Retool app — cross-browser, cross-device, up to 50MB PDFs.</p>
+        <div class="proj-metrics">
+          <div class="pm"><span class="pv" style="color:rgba(155,138,255,1)">UAT</span><span class="pk">Testing Lead</span></div>
+          <div class="pm"><span class="pv" style="color:rgba(155,138,255,1)">2</span><span class="pk">Apps Tested</span></div>
+        </div>
+        <div class="proj-expand">
+          <div class="expand-inner">
+            <div class="exp-item"><div class="exp-dot" style="background:#9B8AFF"></div>Worked the Hesk support inbox — investigated, reproduced, resolved or escalated every ticket</div>
+            <div class="exp-item"><div class="exp-dot" style="background:#9B8AFF"></div>Co-led testing of Learner Media Uploads app across desktop & mobile, Chrome, Firefox, Safari</div>
+            <div class="exp-item"><div class="exp-dot" style="background:#9B8AFF"></div>Built a structured test pack and bug report spreadsheet delivered to the engineering team</div>
+            <div class="exp-item"><div class="exp-dot" style="background:#9B8AFF"></div>Tested PDF file uploads at multiple sizes up to the 50MB system limit</div>
+          </div>
+        </div>
+        <div class="proj-tags">
+          <span class="tag" style="color:#9B8AFF;border-color:rgba(155,138,255,0.22)">Hesk</span>
+          <span class="tag" style="color:#9B8AFF;border-color:rgba(155,138,255,0.22)">Retool</span>
+          <span class="tag" style="color:#9B8AFF;border-color:rgba(155,138,255,0.22)">QA</span>
+        </div>
+        <button class="proj-cta"><span>Expand details</span>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M7 2v10M3 8l4 4 4-4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Webflow → Salesforce Automation -->
+      <div class="proj-card" onclick="toggleProj(this)">
+        <div class="proj-glow"></div>
+        <p class="proj-num">04</p>
+        <p class="proj-icon">🔗</p>
+        <h3 class="proj-title">Webflow → Salesforce Integration</h3>
+        <p class="proj-desc">Built a live Make.com automation connecting Umuzi's Webflow forms to Salesforce. All form submissions now create leads automatically — eliminating manual data entry and ensuring real-time CRM updates.</p>
+        <div class="proj-metrics">
+          <div class="pm"><span class="pv">87</span><span class="pk">Credits Consumed</span></div>
+          <div class="pm"><span class="pv">100%</span><span class="pk">Automation Rate</span></div>
+        </div>
+        <div class="proj-expand">
+          <div class="expand-inner">
+            <div class="exp-item"><div class="exp-dot"></div>Configured Make.com webhook to capture Webflow form submissions in real-time</div>
+            <div class="exp-item"><div class="exp-dot"></div>Mapped form fields to Salesforce Lead object with proper data validation</div>
+            <div class="exp-item"><div class="exp-dot"></div>Implemented error handling and retry logic for failed submissions</div>
+            <div class="exp-item"><div class="exp-dot"></div>Set up monitoring dashboard to track automation performance and credit usage</div>
+            <div class="exp-item"><div class="exp-dot"></div>Tested end-to-end flow from form submission to lead creation in Salesforce</div>
+          </div>
+        </div>
+        <div class="proj-tags">
+          <span class="tag">Make.com</span>
+          <span class="tag">Webflow</span>
+          <span class="tag">Salesforce API</span>
+          <span class="tag">Webhooks</span>
+        </div>
+        <button class="proj-cta"><span>Expand details</span>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M7 2v10M3 8l4 4 4-4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Salesforce Training Rollout -->
+      <div class="proj-card" onclick="toggleProj(this)">
+        <div class="proj-glow"></div>
+        <p class="proj-num">05</p>
+        <p class="proj-icon">🎓</p>
+        <h3 class="proj-title">Salesforce Staff Training Program</h3>
+        <p class="proj-desc">Designed and executed a comprehensive Trailhead training initiative for 15+ Umuzi staff. Created personalized learning paths, deployed Trail Tracker, and achieved full badge completion tracking.</p>
+        <div class="proj-metrics">
+          <div class="pm"><span class="pv">15+</span><span class="pk">Staff Trained</span></div>
+          <div class="pm"><span class="pv">2</span><span class="pk">Week Program</span></div>
+        </div>
+        <div class="proj-expand">
+          <div class="expand-inner">
+            <div class="exp-item"><div class="exp-dot"></div>Assessed skill levels and created customized Trailhead trail mixes for different roles</div>
+            <div class="exp-item"><div class="exp-dot"></div>Deployed Trail Tracker in Production environment with daily badge syncs</div>
+            <div class="exp-item"><div class="exp-dot"></div>Conducted weekly office hours sessions for Q&A and progress check-ins</div>
+            <div class="exp-item"><div class="exp-dot"></div>Built progress tracking dashboard with completion rates and badge achievements</div>
+            <div class="exp-item"><div class="exp-dot"></div>Delivered final assessment and certification for trained staff members</div>
+          </div>
+        </div>
+        <div class="proj-tags">
+          <span class="tag">Trailhead</span>
+          <span class="tag">Trail Tracker</span>
+          <span class="tag">Training Design</span>
+          <span class="tag">Staff Development</span>
+        </div>
+        <button class="proj-cta"><span>Expand details</span>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M7 2v10M3 8l4 4 4-4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- MAGIC MOMENT -->
+<section id="magic">
+  <div class="section-inner reveal">
+    <div class="sec-label"><div class="sec-label-line"></div><span>02 — Magic Moment</span></div>
+    <h2 class="sec-heading">The moment it <em>clicked</em></h2>
+    <div class="magic-grid">
+      <div class="magic-quote-block">
+        <p class="magic-q">"Nice, that was fast!"</p>
+        <p class="magic-attr">— Sara Brakeman · After the Webflow integration went live</p>
+      </div>
+      <div class="magic-story">
+        <p>The first time a Webflow form submission landed automatically in Salesforce — no manual copying, no spreadsheet in the middle, just the record appearing exactly where it should be — that was the moment Make.com stopped being abstract and became real.</p>
+        <p>It took a few days to build. It took <strong>87 credits</strong> to prove. And it's been running without interruption ever since. That's the kind of work that matters.</p>
+        <p>Sara's reaction — <em>"Nice, that was fast!"</em> — is the four-word version of a clean integration. Fast to build, invisible to use, impossible to break the team's flow without.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section id="timeline">
+  <div class="section-inner reveal">
+    <div class="sec-label"><div class="sec-label-line"></div><span>03 — Timeline</span></div>
+    <h2 class="sec-heading">How Q1 <em>unfolded</em></h2>
+    <div class="tl-grid" id="tl-wrap"></div>
+  </div>
+</section>
+
+<!-- SCORECARD -->
+<section id="scorecard">
+  <div class="section-inner reveal">
+    <div class="sec-label"><div class="sec-label-line"></div><span>04 — Performance</span></div>
+    <h2 class="sec-heading">Scored <em>honestly</em></h2>
+    <div class="score-grid" id="score-grid"></div>
+    <p style="font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:300;color:var(--white-faint);margin-top:28px;font-style:italic;">
+      Click any row to read the full notes. Overall: 7.6 / 10. The trajectory across the quarter matters more than any single score.
+    </p>
+  </div>
+</section>
+
+<!-- LEARNINGS -->
+<section id="learnings">
+  <div class="section-inner reveal">
+    <div class="sec-label"><div class="sec-label-line"></div><span>05 — Growth</span></div>
+    <h2 class="sec-heading">What I <em>learned</em></h2>
+    <div class="learn-grid" id="learn-grid"></div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-inner reveal">
+    <div class="sec-label"><div class="sec-label-line"></div><span>06 — Stack</span></div>
+    <h2 class="sec-heading">Tools & <em>skills</em></h2>
+    <div class="skills-wrap" id="skills-wrap"></div>
+  </div>
+</section>
+
+<!-- ONE WORD -->
+<section id="oneword">
+  <div class="section-inner reveal">
+    <div class="sec-label"><div class="sec-label-line"></div><span>07 — In One Word</span></div>
+    <div class="word-wrap">
+      <div class="big-word">Mo<span>men</span>tum</div>
+      <div class="word-body">
+        <p>I started January uncertain — asking clarifying questions, making early mistakes, finding my footing. I ended March shipping integrations, leading a project, training staff, and proactively documenting my own handover before being asked.</p>
+        <p>The through-line across all three months is <strong>forward motion</strong>, even when things broke around me — sandbox lockouts, lost admin access, sync issues that took hours to debug. The direction was always forward, even when I had to back up and try again.</p>
+        <p>The biggest personal lesson I'm carrying into Q2: <strong>celebrate the small wins.</strong> In a fast-moving environment, if you don't stop to acknowledge progress, you'll always feel behind — even when you're not.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="foot-copy">© 2026 Monty Mhango — All rights reserved</span>
+  <div class="foot-links">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="projects.html">Projects</a>
+    <a href="contact.html">Contact</a>
+  </div>
+  <span class="foot-copy" style="color:rgba(0,161,224,0.4)">Q1 2026 · Umuzi · Johannesburg</span>
+</footer>
+
+<script>
+// ── CURSOR ──
+const cur = document.getElementById('cursor');
+const ring = document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; });
+(function tick(){
+  rx += (mx-rx)*0.14; ry += (my-ry)*0.14;
+  cur.style.left=mx+'px'; cur.style.top=my+'px';
+  ring.style.left=rx+'px'; ring.style.top=ry+'px';
+  requestAnimationFrame(tick);
+})();
+
+// ── COUNTER (hero) ──
+function runCounter(el) {
+  const target = +el.dataset.target;
+  const dur = 1800; const t0 = performance.now();
+  function step(now) {
+    const p = Math.min((now-t0)/dur, 1);
+    const ease = 1-Math.pow(1-p, 3);
+    el.textContent = Math.round(ease * target);
+    if(p < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+setTimeout(() => document.querySelectorAll('.h-stat .num').forEach(runCounter), 1100);
+
+// ── SCROLL REVEAL ──
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(e.isIntersecting) {
+      e.target.classList.add('vis');
+      // Trigger skill bars
+      e.target.querySelectorAll('.score-bar[data-w]').forEach(b => {
+        b.style.width = b.dataset.w + '%';
+      });
+      io.unobserve(e.target);
     }
+  });
+}, { threshold: 0.08 });
 
-    function closeMobileMenu() {
-      navToggle.classList.remove('active');
-      mobileMenu.classList.remove('active');
-      body.classList.remove('menu-open');
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+// Observe timeline items separately
+const tlio = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(e.isIntersecting) { e.target.classList.add('vis'); tlio.unobserve(e.target); }
+  });
+}, { threshold: 0.1 });
+
+// ── PROJECT CARD EXPAND ──
+function toggleProj(card) {
+  const exp = card.querySelector('.proj-expand');
+  const btn = card.querySelector('.proj-cta span');
+  if(!exp) return;
+  const isOpen = exp.classList.contains('open');
+  document.querySelectorAll('.proj-expand.open').forEach(e => {
+    e.classList.remove('open');
+    e.closest('.proj-card').classList.remove('open');
+    const b = e.closest('.proj-card').querySelector('.proj-cta span');
+    if(b) b.textContent = 'Expand details';
+  });
+  if(!isOpen) {
+    exp.classList.add('open');
+    card.classList.add('open');
+    if(btn) btn.textContent = 'Collapse';
+  }
+}
+
+// ── TIMELINE ──
+const tlEvents = [
+  { date:'Jan 2026', title:'Salesforce field audit begins', body:'Dove into the Account object checking all fields against expected mapping — initially reported 19 gaps, later narrowed to 1.' },
+  { date:'Jan 2026', title:'Hesk support rotation starts', body:'Began handling Level 0 support tickets alongside the Salesforce workstream.' },
+  { date:'Early Feb', title:'Webflow → Salesforce automation live', body:'Make.com pipeline built and deployed. All Webflow form submissions now land in Salesforce automatically. 87 credits in, still running.' },
+  { date:'Feb 2026', title:'TaxTim project kicks off', body:'Took on the Tech Lead role for the TaxTim FIFO crypto tax calculator build.' },
+  { date:'Feb 2026', title:'Learner Media Uploads UAT', body:'Co-led cross-browser, cross-device testing of the new Retool upload app. Delivered test pack & bug report.' },
+  { date:'Feb 2026', title:'Permission sets & groups configured', body:'Built and tested Permission Set Groups for all 3 BD personas in the UAT sandbox. Verified field-level and object-level permissions.' },
+  { date:'Mar 2026', title:'Trail Tracker deployed to Production', body:'Configured daily Trailhead badge sync, built custom trail mixes, and prepared the 2-week onboarding programme.' },
+  { date:'Mar 2026', title:'Staff Salesforce training rollout', body:'Delivered office hours, tracked badge completion for 15+ staff, supported stragglers through Trailhead sign-up.' },
+  { date:'Mar 2026', title:'TaxTim crypto calculator submitted', body:'Submitted the FIFO calculator — eligible for live placement on TaxTim\'s website for 3M+ SA taxpayers.' },
+];
+
+const tlWrap = document.getElementById('tl-wrap');
+const leftCol = document.createElement('div'); leftCol.className = 'tl-col';
+const rightCol = document.createElement('div'); rightCol.className = 'tl-col';
+tlWrap.appendChild(leftCol); tlWrap.appendChild(rightCol);
+
+tlEvents.forEach((ev, i) => {
+  const item = document.createElement('div');
+  item.className = 'tl-item';
+  item.style.transitionDelay = `${(i % 5) * 0.1}s`;
+  item.innerHTML = `<div class="tl-dot"></div>
+    <div class="tl-date">${ev.date}</div>
+    <div class="tl-title">${ev.title}</div>
+    <div class="tl-body">${ev.body}</div>`;
+  (i % 2 === 0 ? leftCol : rightCol).appendChild(item);
+  tlio.observe(item);
+});
+
+// ── SCORECARD ──
+const scores = [
+  { label:'Technical Execution',       score:7.5, pct:75, note:'Shipped real things: a live Make.com integration, a FIFO engine, Trail Tracker in Production, and a full field audit. The deduction comes from the early 19→1 field audit error, which showed that attention to detail under pressure still needs sharpening.' },
+  { label:'Communication & Proactiveness', score:8.0, pct:80, note:'Consistently gave structured updates unprompted, flagged blockers clearly, sent a handover doc nobody asked for, and documented findings with comments. Main gap: slightly slow escalation when stuck mid-task.' },
+  { label:'Learning Speed',              score:8.5, pct:85, note:'Came in knowing very little about Salesforce security, Make.com, or FIFO tax logic — and left the quarter configuring Permission Set Groups and leading a tech project. Half a point off for concepts (like Column C) that took multiple revisits to stick.' },
+  { label:'Ownership & Initiative',     score:7.0, pct:70, note:'Flashes of real ownership — the handover doc, the Slack integration research, proposing the trail mix structure. But there were stretches of waiting for the next task rather than identifying what needed doing. Improved significantly by March.' },
+  { label:'Handling Ambiguity',         score:7.0, pct:70, note:'Stayed calm when things broke around you — sandbox lockouts, lost admin access, sync issues. The deduction is for moments where ambiguity slowed you down more than it should have before surfacing assumptions.' },
+];
+
+const sg = document.getElementById('score-grid');
+scores.forEach(s => {
+  const row = document.createElement('div');
+  row.className = 'score-row';
+  row.innerHTML = `
+    <div class="score-label">${s.label}</div>
+    <div class="score-bar-wrap"><div class="score-bar" data-w="${s.pct}"></div></div>
+    <div class="score-val">${s.score}<span>/ 10</span></div>
+    <div class="score-note">${s.note}</div>`;
+  row.querySelector('.score-label').addEventListener('click', () => {
+    row.classList.toggle('expanded');
+  });
+  row.querySelector('.score-val').addEventListener('click', () => {
+    row.classList.toggle('expanded');
+  });
+  sg.appendChild(row);
+});
+
+// observe score bars
+const barObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(e.isIntersecting) {
+      e.target.querySelectorAll('.score-bar').forEach(b => { b.style.width = b.dataset.w + '%'; });
+      barObs.unobserve(e.target);
     }
+  });
+}, { threshold: 0.2 });
+barObs.observe(sg);
 
-    navToggle.addEventListener('click', toggleMobileMenu);
+// ── LEARNINGS ──
+const learns = [
+  { n:'1', title:'One missing column can bias your entire audit', body:'An early field count reported 19 missing fields — it was actually 1. Triple-check every axis before reporting numbers. Especially when leadership is reading your output.' },
+  { n:'2', title:'No-code automation deserves real respect', body:'Make.com + Webflow + Salesforce delivered a live data pipeline in days, not weeks. The ceiling on no-code tools is much higher than it looks from the outside.' },
+  { n:'3', title:'FIFO sounds simple — it really isn\'t', body:'Multi-currency crypto tax calculations have significant edge cases around partial sells, stablecoins, and tax year boundaries. Research the full algorithm before writing a single line.' },
+  { n:'4', title:'Know when to pause vs when to push', body:'Check whether a partner (Arcsen) is mid-deployment before making configuration changes. One well-timed pause saves hours of untangling conflicting edits.' },
+  { n:'5', title:'Permissions are architecture, not admin', body:'Salesforce Permission Sets encode how an org thinks about who sees what. That\'s a design decision, not a checkbox task. Design before you configure.' },
+  { n:'6', title:'Celebrate your small wins', body:'In a fast environment it\'s easy to ship something and immediately move on. Those moments — the first form in Salesforce, the permission sets matching, the calculator submitting — deserve a pause. Progress is invisible if you never stop to see it.' },
+];
 
-    // Close menu when clicking on a link
-    document.querySelectorAll('.mobile-menu-links a').forEach(link => {
-      link.addEventListener('click', closeMobileMenu);
-    });
+const lg = document.getElementById('learn-grid');
+learns.forEach(l => {
+  const card = document.createElement('div');
+  card.className = 'learn-card reveal';
+  card.innerHTML = `<div class="learn-n">${l.n}</div>
+    <div class="learn-title">${l.title}</div>
+    <div class="learn-body">${l.body}</div>`;
+  lg.appendChild(card);
+  io.observe(card);
+});
 
-    // Close menu when clicking outside
-    mobileMenu.addEventListener('click', (e) => {
-      if (e.target === mobileMenu) {
-        closeMobileMenu();
-      }
-    });
+// ── SKILLS ──
+const skills = [
+  { name:'Salesforce', cat:'CRM' },
+  { name:'Make.com', cat:'Automation' },
+  { name:'Webflow', cat:'Integration' },
+  { name:'Trail Tracker', cat:'SF AppExchange' },
+  { name:'React.js', cat:'Frontend' },
+  { name:'Symfony PHP', cat:'Backend' },
+  { name:'FIFO Algorithm', cat:'Tax Logic' },
+  { name:'Permission Sets', cat:'SF Security' },
+  { name:'Retool', cat:'Testing' },
+  { name:'Hesk', cat:'Support' },
+  { name:'Trailhead', cat:'Training' },
+  { name:'Google Sheets', cat:'Documentation' },
+];
 
-    // Close menu on escape key
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && mobileMenu.classList.contains('active')) {
-        closeMobileMenu();
-      }
-    });
-
-    // ── CUSTOM CURSOR ──
-    const cur = document.getElementById('cursor');
-    const ring = document.getElementById('cursor-ring');
-    let mx = 0, my = 0, rx = 0, ry = 0;
-    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-    (function animate() {
-      rx += (mx - rx) * 0.14;
-      ry += (my - ry) * 0.14;
-      cur.style.left = mx + 'px'; cur.style.top = my + 'px';
-      ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
-      requestAnimationFrame(animate);
-    })();
-  </script>
-
+const sw = document.getElementById('skills-wrap');
+skills.forEach(s => {
+  const el = document.createElement('div');
+  el.className = 'sk-pill';
+  el.innerHTML = `<div class="sk-name">${s.name}</div><div class="sk-cat">${s.cat}</div>`;
+  sw.appendChild(el);
+});
+</script>
 </body>
 </html>
